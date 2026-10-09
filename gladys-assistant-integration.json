@@ -1,101 +1,142 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "Ring",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Ring doorbells, cameras and Ring Alarm: presses, motion, snapshots, lights and sirens.",
+    "fr": "Sonnettes, caméras et alarme Ring : appuis, mouvements, instantanés, éclairages et sirènes."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
+  "docker_image": "ghcr.io/guim31/gladys-ring:1.0.0",
   "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
-  "transports": ["local", "cloud"],
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-ring/main/cover.png",
+  "categories": ["security"],
+  "transports": ["cloud"],
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": { "en": "Sign in to Ring", "fr": "Connexion à Ring" },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "Ring requires two-step verification. Either paste a refresh token obtained on a computer with \"npx -p ring-client-api ring-auth-cli\", or fill in your Ring email and password, save, then run the two actions \"Send a verification code\" and \"Confirm the verification code\" below. The integration keeps the token Ring renews in its own storage: you only sign in once.",
+        "fr": "Ring impose la vérification en deux étapes. Collez un jeton de rafraîchissement obtenu sur un ordinateur avec « npx -p ring-client-api ring-auth-cli », ou renseignez l'e-mail et le mot de passe de votre compte Ring, enregistrez, puis lancez les deux actions « Envoyer un code de vérification » et « Confirmer le code de vérification » ci-dessous. L'intégration conserve le jeton que Ring renouvelle : vous ne vous connectez qu'une fois."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://github.com/dgreif/ring/wiki/Refresh-Tokens",
+          "label": { "en": "About Ring refresh tokens", "fr": "À propos des jetons Ring" }
         }
       ]
     },
     {
-      "key": "latitude",
-      "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
+      "key": "refresh_token",
+      "type": "secret",
+      "label": { "en": "Refresh token", "fr": "Jeton de rafraîchissement" },
       "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+        "en": "Printed by ring-auth-cli. Leave empty to sign in with the email and password below.",
+        "fr": "Affiché par ring-auth-cli. Laissez vide pour vous connecter avec l'e-mail et le mot de passe ci-dessous."
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
-      "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
+      "required": false
     },
     {
-      "key": "longitude",
-      "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
-      "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
-      },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
+      "key": "email",
+      "type": "string",
+      "label": { "en": "Ring email", "fr": "E-mail du compte Ring" },
+      "placeholder": { "en": "you@example.com", "fr": "vous@exemple.fr" },
+      "required": false
     },
     {
-      "key": "unit",
+      "key": "password",
+      "type": "secret",
+      "label": { "en": "Ring password", "fr": "Mot de passe Ring" },
+      "description": {
+        "en": "Only used by the sign-in actions. You can clear it once signed in.",
+        "fr": "Utilisé seulement par les actions de connexion. Vous pouvez le vider une fois connecté."
+      },
+      "required": false
+    },
+    {
+      "key": "options",
+      "type": "section",
+      "label": { "en": "Options", "fr": "Options" },
+      "description": {
+        "en": "Snapshots of battery cameras are reused for 10 minutes, so that refreshing them does not drain the battery.",
+        "fr": "Les instantanés des caméras sur batterie sont réutilisés 10 minutes, pour que leur rafraîchissement ne vide pas la batterie."
+      }
+    },
+    {
+      "key": "snapshot_interval",
       "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
+      "label": { "en": "Refresh the snapshots", "fr": "Rafraîchir les instantanés" },
       "required": false,
-      "default": "celsius",
+      "default": "30",
       "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
+        {
+          "value": "0",
+          "label": {
+            "en": "Only on events and on request",
+            "fr": "Seulement sur événement et à la demande"
+          }
+        },
+        { "value": "10", "label": { "en": "Every 10 minutes", "fr": "Toutes les 10 minutes" } },
+        { "value": "30", "label": { "en": "Every 30 minutes", "fr": "Toutes les 30 minutes" } },
+        { "value": "60", "label": { "en": "Every hour", "fr": "Toutes les heures" } }
       ]
     },
     {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "key": "allow_alarm_control",
+      "type": "boolean",
+      "label": {
+        "en": "Allow Gladys to arm and disarm the Ring Alarm",
+        "fr": "Autoriser Gladys à armer et désarmer l'alarme Ring"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds.",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes."
+        "en": "Off: the alarm mode is shown, never changed. On: anyone who can use your Gladys dashboards and scenes can disarm it.",
+        "fr": "Désactivé : le mode de l'alarme est affiché, jamais modifié. Activé : quiconque utilise vos tableaux de bord et scènes Gladys peut la désarmer."
       },
       "required": false,
-      "default": 300,
-      "min": 30,
-      "max": 3600
+      "default": false
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": { "en": "Language of the device names", "fr": "Langue des noms d'appareils" },
+      "description": {
+        "en": "Gladys keeps the feature names chosen when a device is added.",
+        "fr": "Gladys garde les noms de fonctionnalités choisis à l'ajout d'un appareil."
+      },
+      "required": false,
+      "default": "en",
+      "options": [
+        { "value": "en", "label": { "en": "English", "fr": "Anglais" } },
+        { "value": "fr", "label": { "en": "French", "fr": "Français" } }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
-      "timeout_seconds": 30
+      "key": "send_code",
+      "label": { "en": "Send a verification code", "fr": "Envoyer un code de vérification" },
+      "description": {
+        "en": "Signs in with the saved email and password: Ring sends you a code by SMS, email or authenticator app.",
+        "fr": "Se connecte avec l'e-mail et le mot de passe enregistrés : Ring vous envoie un code par SMS, e-mail ou application."
+      },
+      "timeout_seconds": 60
     },
     {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
+      "key": "confirm_code",
+      "label": { "en": "Confirm the verification code", "fr": "Confirmer le code de vérification" },
+      "description": {
+        "en": "Enter the code Ring just sent you (valid 10 minutes).",
+        "fr": "Saisissez le code que Ring vient de vous envoyer (valable 10 minutes)."
+      },
+      "timeout_seconds": 60,
       "fields": [
         {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
+          "key": "code",
+          "type": "string",
+          "label": { "en": "Verification code", "fr": "Code de vérification" },
+          "placeholder": { "en": "123456", "fr": "123456" },
           "required": true
         }
       ]
@@ -103,75 +144,190 @@
   ],
   "scene_triggers": [
     {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
+      "key": "doorbell_pressed",
+      "label": { "en": "Ring doorbell pressed", "fr": "Appui sur une sonnette Ring" },
       "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+        "en": "Someone pressed the button of a Ring doorbell.",
+        "fr": "Quelqu'un a appuyé sur le bouton d'une sonnette Ring."
       },
       "fields": [
         {
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
+          "label": { "en": "Doorbell", "fr": "Sonnette" }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": { "en": "Doorbell name", "fr": "Nom de la sonnette" }
+        }
+      ]
+    },
+    {
+      "key": "motion_detected",
+      "label": { "en": "Ring motion detected", "fr": "Mouvement détecté par Ring" },
+      "description": {
+        "en": "A Ring doorbell or camera detected motion.",
+        "fr": "Une sonnette ou caméra Ring a détecté un mouvement."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Camera", "fr": "Caméra" }
         },
         {
-          "key": "target",
+          "key": "detection",
           "type": "multi_select",
           "label": { "en": "What moved", "fr": "Ce qui a bougé" },
+          "description": {
+            "en": "Person, vehicle and package need Ring smart alerts (Ring Protect plan); otherwise every motion is \"Other motion\".",
+            "fr": "Personne, véhicule et colis demandent les alertes intelligentes Ring (abonnement Ring Protect) ; sinon tout mouvement est « Autre mouvement »."
+          },
           "options": [
             { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
+            { "value": "vehicle", "label": { "en": "Vehicle", "fr": "Véhicule" } },
+            { "value": "package", "label": { "en": "Package", "fr": "Colis" } },
+            { "value": "motion", "label": { "en": "Other motion", "fr": "Autre mouvement" } }
           ]
         }
       ],
       "variables": [
         {
-          "key": "target",
+          "key": "device_name",
+          "type": "string",
+          "label": { "en": "Camera name", "fr": "Nom de la caméra" }
+        },
+        {
+          "key": "detection",
           "type": "string",
           "label": { "en": "What moved", "fr": "Ce qui a bougé" }
+        }
+      ]
+    },
+    {
+      "key": "alarm_mode_changed",
+      "label": { "en": "Ring Alarm mode changed", "fr": "Mode de l'alarme Ring changé" },
+      "description": {
+        "en": "The Ring Alarm was armed or disarmed, from Gladys, the Ring app or a keypad.",
+        "fr": "L'alarme Ring a été armée ou désarmée, depuis Gladys, l'application Ring ou un clavier."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Ring Alarm", "fr": "Alarme Ring" }
+        },
+        {
+          "key": "mode",
+          "type": "multi_select",
+          "label": { "en": "New mode", "fr": "Nouveau mode" },
+          "options": [
+            { "value": "disarmed", "label": { "en": "Disarmed", "fr": "Désarmée" } },
+            { "value": "home", "label": { "en": "Home", "fr": "Domicile" } },
+            { "value": "away", "label": { "en": "Away", "fr": "Absent" } }
+          ]
+        }
+      ],
+      "variables": [
+        { "key": "mode", "type": "string", "label": { "en": "New mode", "fr": "Nouveau mode" } },
+        {
+          "key": "previous_mode",
+          "type": "string",
+          "label": { "en": "Previous mode", "fr": "Mode précédent" }
+        },
+        {
+          "key": "location_name",
+          "type": "string",
+          "label": { "en": "Ring location", "fr": "Lieu Ring" }
         }
       ]
     }
   ],
   "scene_actions": [
     {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
+      "key": "take_snapshot",
+      "label": { "en": "Take a Ring snapshot", "fr": "Prendre un instantané Ring" },
       "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
+        "en": "Refreshes the camera picture, ready for a following \"send a camera image\" action.",
+        "fr": "Rafraîchit l'image de la caméra, prête pour une action « envoyer l'image d'une caméra » qui suit."
       },
-      "timeout_seconds": 15,
+      "timeout_seconds": 30,
       "fields": [
         {
-          "key": "device",
+          "key": "camera",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
+          "label": { "en": "Camera", "fr": "Caméra" },
           "required": true
         }
       ],
       "outputs": [
         {
-          "key": "signalled",
+          "key": "captured",
           "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "label": { "en": "Snapshot taken", "fr": "Instantané pris" }
+        },
+        { "key": "taken_at", "type": "string", "label": { "en": "Taken at", "fr": "Pris à" } }
+      ]
+    },
+    {
+      "key": "set_alarm_mode",
+      "label": { "en": "Set the Ring Alarm mode", "fr": "Changer le mode de l'alarme Ring" },
+      "description": {
+        "en": "Arms or disarms the Ring Alarm. Needs the alarm control allowed in the integration configuration.",
+        "fr": "Arme ou désarme l'alarme Ring. Demande d'autoriser le contrôle de l'alarme dans la configuration."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "alarm",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Ring Alarm", "fr": "Alarme Ring" },
+          "required": true
+        },
+        {
+          "key": "mode",
+          "type": "select",
+          "label": { "en": "Mode", "fr": "Mode" },
+          "required": true,
+          "options": [
+            { "value": "disarmed", "label": { "en": "Disarmed", "fr": "Désarmée" } },
+            { "value": "home", "label": { "en": "Home", "fr": "Domicile" } },
+            { "value": "away", "label": { "en": "Away", "fr": "Absent" } }
+          ]
         }
+      ],
+      "outputs": [
+        { "key": "mode", "type": "string", "label": { "en": "Mode set", "fr": "Mode appliqué" } }
       ]
     }
   ],
   "widgets": [
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
+      "key": "doorbell",
+      "label": { "en": "Ring doorbell", "fr": "Sonnette Ring" },
       "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+        "en": "Last snapshot, last ring and motion, light and siren of a Ring doorbell or camera.",
+        "fr": "Dernier instantané, dernier appui et mouvement, éclairage et sirène d'une sonnette ou caméra Ring."
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "icon": "bell",
+      "settings": [
+        {
+          "key": "camera",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "Doorbell or camera", "fr": "Sonnette ou caméra" },
+          "required": true
+        }
+      ],
+      "action_timeout_seconds": 30
     }
   ]
 }

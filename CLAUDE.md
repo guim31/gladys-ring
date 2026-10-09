@@ -32,15 +32,22 @@ pushing.
 
 ```
 index.js                          SDK wiring only: handlers registered before connect()
-src/devices/index.js              registry of the device blueprints + dispatch helpers
-src/devices/<type>.js             one device type per file (buildDevice, onPoll, onSetValue...)
+src/app.js                        Ring <-> Gladys: discovery, states, events, snapshots, commands, sign-in
+src/ring/session.js               one ring-client-api session (locations, cameras, alarm devices)
+src/ring/logs.js                  library logs routed to the SDK logger, tokens redacted
+src/auth/tokenStore.js            rotating refresh token + hardware id, persisted in /data
+src/auth/signIn.js                two-step sign-in (actions send_code / confirm_code)
+src/devices/camera.js, alarm.js   discovery payloads and states, pure functions of the Ring data
+src/states.js                     publish only changes; republish on onDeviceCreated
+src/events.js                     push notifications -> ding/motion; last events in /data
+src/image.js                      shrink snapshots above the 150 KB camera limit (sharp)
 src/scenes.js                     scene action handlers (manifest `scene_actions`)
-src/widgets.js                    dashboard widget handlers (manifest `widgets`)
+src/widgets.js                    the `doorbell` dashboard widget
 src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + normalization
-src/weather.js                    example driver (Open-Meteo)
 gladys-assistant-integration.json manifest: name, config_schema, actions, image...
 docs/en.md, docs/fr.md            user documentation, re-hosted by Gladys (mandatory)
-test/                             node --test; test/helpers/fakeGladys.js stands in for the SDK
+test/                             node --test; fixtures/ring/ = anonymized Ring API data,
+                                  helpers/fakeRing.js + fakeGladys.js stand in for the library and the SDK
 .github/scripts/release.mjs       release helpers (manifest bump, changelog), tested in test/
 ```
 
@@ -119,6 +126,10 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
 - Les **noms de fonctionnalités sont figés à la création**. Et quand une fonctionnalité est seule
   de son type sur l'appareil, le tableau de bord affiche le libellé générique du type à la place
   du nom publié.
+- **Détecteur d'ouverture inversé** : `OPENING_SENSOR_STATE = { OPEN: 0, CLOSE: 1 }`
+  (`server/utils/constants.js`), le front affiche « Ouvert » sur 0 et Zigbee2MQTT publie `contact`
+  avec `reversedValue: true`. Seule cette catégorie : mouvement, fuite, fumée, sabotage… restent à
+  1 = détecté.
 - **Aucune commande d'appareil ne permet un choix multiple** : un `text/select` n'a qu'un choix
   actif.
 - Un changement de structure fait proposer « Mettre à jour » dans l'onglet Découverte
@@ -175,3 +186,41 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
   `https://integration-store-storage.gladysassistant.com/index.json`.
 - La règle `data/` du `.gitignore` du template (pour le volume `/data`) exclut aussi `src/data/` :
   l'ancrer en `/data/`, dans `.prettierignore` aussi.
+- Le job « Docker build » de la CI échouait sur `429 Too Many Requests` de Docker Hub en tirant
+  `node:24-alpine` (limite des pulls anonymes, IP partagées des runners GitHub). Le `Dockerfile`
+  tire la même image depuis son miroir officiel `public.ecr.aws/docker/library/node:24-alpine`
+  (même empreinte). Un 429 dans un run déjà passé ne se « corrige » pas : le push suivant relance la
+  CI.
+- Avant la première Release, le validateur sort une seule erreur attendue : `docker_image` n'est
+  pas encore publiée (HTTP 403). Tout le reste doit passer.
+
+## Pièges propres à Ring
+
+- `ring-client-api` tire `ffmpeg-for-homebridge`, dont le script d'installation télécharge un
+  binaire de 85 Mo (vidéo en direct seulement, hors périmètre). `.npmrc` pose `ignore-scripts=true`
+  et le Dockerfile copie `.npmrc` : ne pas les retirer. Aucune autre dépendance n'a besoin de script.
+- Mémoire mesurée (Node 22, glibc) : la bibliothèque chargée coûte ~70 Mo, le processus ~120 Mo au
+  repos. Un décodeur JPEG en pur JavaScript (`jpeg-js`) fait grimper le RSS de ~175 Mo sur une
+  image 1080p et ne le rend pas : d'où `sharp` (~40 Mo au pire). Ne pas revenir à `jpeg-js`.
+- La bibliothèque réessaie **à l'infini** (toutes les 5 s) une requête sans réponse réseau :
+  `RingSession.start` borne la connexion à 60 s. Un jeton refusé apparaît comme une erreur
+  « Refresh token is not valid » (`isAuthError`) ; une panne passagère de Ring peut prendre la même
+  forme, d'où un nouvel essai toutes les 30 min plutôt qu'un abandon.
+- Le jeton tourne : `onRefreshTokenUpdated` à chaque authentification et à chaque changement des
+  identifiants de notification push. Il est réécrit dans `/data/ring-auth.json` (écriture atomique,
+  0600), jamais dans un log, jamais dans la configuration.
+- Sans `systemId` stable, la bibliothèque tire un identifiant matériel au hasard dans un conteneur :
+  un nouvel « appareil autorisé » dans le compte Ring à chaque démarrage. Il est persisté dans `/data`.
+- Le SDK publié (0.14.0) n'a ni `publishChangedStates` ni `@gladysassistant/integration-sdk/testing`,
+  que le README de `master` documente : `src/states.js` et `test/helpers/fakeGladys.js` les
+  remplacent.
+- `sharp` installe aussi `@img/sharp-wasm32` (9 Mo, dépendance optionnelle sans contrainte de
+  plateforme) : sans effet, ne pas s'en inquiéter.
+- Capteurs de l'alarme : chaque type Ring se lit comme dans homebridge-ring (même dépôt que la
+  bibliothèque) — inondation `flood.faulted`, gel `freeze.faulted`, eau et gel seul `faulted`,
+  fumée/CO `alarmStatus === 'active'`, écouteur et Kidde `smoke`/`co` ou
+  `components['alarm.smoke'|'alarm.co']`. Le gel n'a pas de catégorie Gladys : `input/binary`,
+  affiché « État de l'entrée » sur le tableau de bord (seul de son type). La table
+  `SENSOR_KINDS` de `src/devices/alarm.js` est le seul endroit à compléter pour un nouveau type.
+- Dans une session de code, `dockerd` démarre, mais les images de Docker Hub sont refusées par le
+  proxy (429/403) : impossible de construire l'image ou de mesurer la mémoire sous Alpine ici.

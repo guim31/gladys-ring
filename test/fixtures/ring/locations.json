@@ -1,0 +1,15 @@
+{
+  "_comment": "Anonymized GET devices/v1/locations (user_locations).",
+  "user_locations": [
+    {
+      "location_id": "loc-0001",
+      "name": "Home",
+      "owner_id": 1000
+    },
+    {
+      "location_id": "loc-0002",
+      "name": "Lake House",
+      "owner_id": 1000
+    }
+  ]
+}

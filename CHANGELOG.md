@@ -12,28 +12,20 @@ the notes of the version's GitHub Release.
 
 ### Added
 
-- A working example of scene triggers, scene actions and dashboard widgets
-  (Gladys 5.1.0 or later).
-- `CHANGELOG.md`, rolled by the Release workflow.
-- A GitHub Release for every version, with its changelog section as notes: the
-  Gladys Supervision page links each version to the repository's releases.
-- CI runs the tests on Node 22 and 24, and builds the Docker image.
-- Dependabot keeps the npm dependencies and the GitHub Actions up to date.
-- `SECURITY.md` (how to report a vulnerability) and `CLAUDE.md` (project rules
-  for contributors and coding assistants).
-- Manifest tests: `version` matches `package.json`, `docker_image` is tagged
-  with it, descriptions hold 10 to 100 characters, placeholders are
-  multi-language objects.
-- The latitude and longitude fields show an example value as placeholder.
+- Ring video doorbells and cameras: snapshot as the Gladys camera image, doorbell press and motion
+  in real time (push notifications), battery level, floodlight/spotlight light and siren control,
+  online/offline badge.
+- Ring Alarm: alarm mode (disarmed, home, away), read-only unless allowed in the configuration;
+  contact sensors and motion detectors with tamper and battery.
+- Ring Alarm flood & freeze sensor, water sensor, freeze sensor, smoke alarm, CO alarm, Smoke & CO
+  Listener and Kidde smoke/CO alarm: leak, freeze, smoke and carbon monoxide detection.
+- Sign-in from the Configuration screen with two-step verification (send then confirm a code), or
+  with a refresh token from `ring-auth-cli`. The token Ring renews is kept in `/data`.
+- Scene triggers: doorbell pressed, motion detected (person, vehicle, package, other motion),
+  alarm mode changed. Scene actions: take a snapshot, set the alarm mode.
+- Dashboard widget "Ring doorbell": last snapshot, last ring and motion with their time, battery,
+  connection, snapshot, light and siren buttons.
+- Snapshots above the Gladys 150 KB limit are downsized.
+- English and French documentation.
 
-### Changed
-
-- Node.js 22 or later is required (Node 20 is end-of-life).
-
-### Fixed
-
-- The release commit no longer fails `npm run format:check`: the Release
-  workflow updates the manifest `version` and `docker_image` in place instead
-  of re-printing the whole file with `jq`.
-
-[Unreleased]: https://github.com/GladysAssistant/integration-template-js/commits/main
+[Unreleased]: https://github.com/guim31/gladys-ring/commits/main

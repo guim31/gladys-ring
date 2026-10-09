@@ -1,65 +1,189 @@
-# Template de démonstration
+# Ring pour Gladys Assistant
 
-Ceci est la documentation utilisateur de l'intégration. Gladys ré-héberge ce
-fichier et affiche un lien **Documentation** permanent vers lui dans l'écran
-de configuration (dans la langue de l'utilisateur, avec l'anglais en repli) —
-c'est au moment de configurer que l'utilisateur en a le plus besoin. Gardez
-les courtes indications d'accueil dans les blocs `section` du `config_schema`
-du manifest ; mettez ici le pas-à-pas détaillé (captures d'écran, dépannage…).
+Intégrez vos **sonnettes vidéo, caméras et votre alarme Ring** à Gladys : un appui sur la sonnette
+ou un mouvement déclenche vos scènes en temps réel, l'instantané de la caméra s'affiche sur votre
+tableau de bord, et vous pouvez allumer le projecteur ou déclencher la sirène depuis Gladys.
+
+> **Développée sans le matériel : retours bienvenus.** Cette intégration a été écrite et testée sur
+> des données enregistrées de l'API Ring, pas sur de vrais appareils. Si quelque chose se comporte
+> bizarrement avec votre modèle, ouvrez un ticket sur le
+> [dépôt GitHub](https://github.com/guim31/gladys-ring/issues) ou écrivez sur le forum Gladys : vos
+> retours la rendront fiable.
+
+Sans lien avec Ring LLC ni Amazon, ni approuvée ou soutenue par eux. « Ring » est une marque de
+Ring LLC.
 
 ## Ce que vous obtenez
 
-Six appareils de démonstration apparaissent après l'installation : une
-station météo (vraies données Open-Meteo), un interrupteur, une lampe
-variable, une prise connectée avec mesure de puissance, un détecteur de
-mouvement et une caméra.
+| Appareil Ring                                                   | Dans Gladys                                                                                |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Sonnettes vidéo (filaires, sur batterie, Pro, Elite, judas)     | Instantané, **appui sonnette**, mouvement, batterie (modèles sur batterie)                 |
+| Stick Up Cam, Indoor Cam                                        | Instantané, mouvement, batterie (modèles sur batterie)                                     |
+| Spotlight Cam, Floodlight Cam                                   | Instantané, mouvement, batterie (modèles sur batterie), **éclairage**, **sirène**          |
+| Ring Alarm (centrale)                                           | **Mode de l'alarme** : Désarmée, Domicile, Absent (lecture seule sauf si vous l'autorisez) |
+| Détecteurs d'ouverture Ring Alarm                               | Ouvert/fermé, sabotage, batterie                                                           |
+| Détecteurs de mouvement Ring Alarm                              | Mouvement, sabotage, batterie                                                              |
+| Détecteur d'inondation et de gel Ring Alarm, capteur d'eau Ring | **Fuite**, **gel** (modèle inondation et gel), sabotage, batterie                          |
+| Écouteur fumée et CO Ring Alarm, détecteur fumée/CO Kidde       | **Fumée**, **monoxyde de carbone**                                                         |
+| Détecteurs de fumée et de CO associés à Ring Alarm              | **Fumée** ou **monoxyde de carbone**, sabotage, batterie                                   |
 
-## Configuration
+Chaque caméra affiche aussi sa connexion sur sa carte : **Cloud** quand elle est en ligne,
+**Injoignable** quand Ring la signale hors ligne.
+
+En plus des appareils :
+
+- **Déclencheurs de scène** : _Appui sur une sonnette Ring_, _Mouvement détecté par Ring_ (filtre
+  sur ce qui a bougé : personne, véhicule, colis ou autre mouvement) et _Mode de l'alarme Ring
+  changé_ (depuis Gladys, l'application Ring ou un clavier).
+- **Actions de scène** : _Prendre un instantané Ring_ et _Changer le mode de l'alarme Ring_.
+- **Widget de tableau de bord** _Sonnette Ring_ : dernier instantané, heure du dernier appui et du
+  dernier mouvement, batterie, connexion, et boutons pour rafraîchir l'instantané, allumer ou
+  éteindre l'éclairage, et déclencher la sirène (avec confirmation).
+
+Prérequis : **Gladys Assistant 5.1 ou plus récent** et un compte Ring. Aucun abonnement Ring
+Protect n'est nécessaire, sauf pour les alertes intelligentes de Ring (personne, véhicule, colis) :
+sans abonnement, tout mouvement est signalé comme « autre mouvement ».
+
+## Se connecter à Ring
+
+Ring impose la vérification en deux étapes sur tous les comptes : la connexion demande donc une
+étape de plus. Vous ne la faites qu'une fois : Ring renouvelle régulièrement le jeton, et
+l'intégration enregistre chaque jeton renouvelé dans son propre stockage, si bien qu'elle reste
+connectée après un redémarrage ou une mise à jour.
+
+### Option 1 : depuis Gladys (recommandée)
 
 1. Ouvrez l'onglet **Configuration** de l'intégration.
-2. Renseignez la **latitude** et la **longitude** que la station météo de
-   démonstration doit observer (Paris par défaut), et choisissez votre unité
-   de température.
-3. Enregistrez : les appareils apparaissent dans l'onglet **Découverte**,
-   prêts à être ajoutés.
+2. Renseignez **E-mail du compte Ring** et **Mot de passe Ring**, puis **Enregistrez**.
+3. Cliquez sur **Envoyer un code de vérification**. Ring vous envoie un code par SMS, e-mail ou
+   application d'authentification, selon votre compte Ring ; le message sous le bouton indique où.
+4. Saisissez le code dans **Confirmer le code de vérification** et lancez l'action, sous 10
+   minutes.
+5. Le statut passe à connecté, et vos appareils apparaissent dans l'onglet **Découverte**.
+6. Vous pouvez maintenant vider le champ mot de passe et enregistrer : il ne sert plus.
 
-Le réglage **Préférer la connexion locale** pilote la prise de
-démonstration : elle affiche en badge le canal réellement utilisé (local ou
-cloud), avec un point orange quand elle fonctionne en mode dégradé (local
-refusé, bascule cloud).
+Ring limite les codes de vérification à 10 toutes les 10 minutes : si vous en avez demandé trop,
+patientez un peu.
 
-## Actions
+### Option 2 : avec un jeton de rafraîchissement, depuis un ordinateur
 
-- **Tester le fournisseur météo** — effectue une requête en direct vers
-  Open-Meteo et affiche la température et l'humidité actuelles sous le
-  bouton.
-- **Identifier un appareil** — choisissez un de vos appareils dans la liste
-  et il se signale (la lampe de démonstration « clignote » dans les logs).
+Si vous préférez ne pas saisir votre mot de passe dans Gladys, générez un jeton sur n'importe quel
+ordinateur où [Node.js](https://nodejs.org) est installé :
 
-## Scènes
+```bash
+npx -p ring-client-api ring-auth-cli
+```
 
-L'intégration ajoute ses propres cartes à l'éditeur de scènes (Gladys 5.1
-ou plus récent), dans la catégorie **Intégrations** :
+L'outil demande votre e-mail Ring, votre mot de passe et le code de vérification, puis affiche une
+ligne du type `"refreshToken": "eyJydCI6..."`. Copiez le long jeton (entre les guillemets, sans
+eux ; coller la ligne entière fonctionne aussi) dans le champ **Jeton de rafraîchissement** de
+l'onglet Configuration, et enregistrez.
 
-- **Mouvement détecté** (déclencheur) — lance la scène quand un détecteur
-  de démonstration voit bouger quelque chose. Choisissez éventuellement le
-  détecteur et ce qui a bougé (personne, animal) ; laissés vides, toute
-  détection correspond. Les actions suivantes peuvent lire ce qui a bougé
-  avec `{{triggerEvent.data.target}}`.
-- **Identifier un appareil** (action) — fait se signaler l'appareil choisi.
-  Elle indique si l'appareil a pu se signaler, pour que les actions
-  suivantes puissent en dépendre.
+### Où voir et révoquer l'accès
 
-## Tableau de bord
+Dans l'application Ring, l'intégration apparaît sous le nom **Gladys Assistant** dans _Control
+Center → Authorized Client Devices_ (appareils clients autorisés). La retirer à cet endroit
+déconnecte Gladys.
 
-Ajoutez le widget **État de la démo** à un tableau de bord : il affiche en
-direct la température de la station météo et la puissance de la prise du
-bureau, la connexion utilisée par la prise (en orange si dégradée) et la
-position observée. Son bouton **Identifier la lampe** fait se signaler la
-lampe de démonstration.
+### « Ring a refusé le jeton »
 
-## Dépannage
+Ce message signifie que Ring n'accepte plus le jeton enregistré : il a été retiré dans le Control
+Center, le mot de passe du compte a changé, ou le jeton a été mal copié. Reconnectez-vous avec
+l'option 1 ou 2. L'intégration réessaie seule un jeton refusé toutes les 30 minutes, et une panne
+de Ring toutes les 5 minutes.
 
-L'intégration journalise tout ce qu'elle fait : consultez les logs de
-l'intégration depuis l'interface Gladys (ou `docker logs` sur l'hôte) avec
-`LOG_LEVEL=debug` pour le détail complet.
+## Ajouter vos appareils
+
+Ouvrez l'onglet **Découverte** et ajoutez les appareils voulus. Gladys garde les noms de
+fonctionnalités choisis à l'ajout d'un appareil : choisissez d'abord la **Langue des noms
+d'appareils** dans l'onglet Configuration (anglais ou français).
+
+L'instantané de la caméra apparaît dans la boîte caméra de Gladys et dans le widget _Sonnette
+Ring_.
+
+## Options
+
+- **Rafraîchir les instantanés** : toutes les 10, 30 (par défaut) ou 60 minutes, ou seulement sur
+  événement et à la demande. En plus, l'instantané de chaque appui et de chaque mouvement est
+  récupéré aussitôt quand Ring en a joint un, et l'ouverture d'une caméra sur le tableau de bord en
+  demande un frais. Les caméras sur batterie sont ménagées : un instantané demandé moins de 10
+  minutes après le précédent est réutilisé au lieu de réveiller la caméra, ce qui viderait la
+  batterie.
+- **Autoriser Gladys à armer et désarmer l'alarme Ring** : désactivé par défaut. Désactivé, le
+  mode de l'alarme est seulement affiché. Activé, quiconque peut utiliser vos tableaux de bord et
+  vos scènes Gladys peut désarmer votre alarme : ne l'activez que si c'est bien ce que vous
+  voulez. Certains capteurs (une fenêtre ouverte à l'armement) demandent une exclusion que seule
+  l'application Ring peut accorder : Gladys indique alors que le mode n'a pas pu être appliqué.
+
+## Idées de scènes
+
+- **On sonne, photo sur mon téléphone** : déclencheur _Appui sur une sonnette Ring_ → action
+  _Prendre un instantané Ring_ sur cette sonnette → action _Envoyer l'image d'une caméra_ de la
+  même caméra.
+- **Quelqu'un dans l'allée la nuit** : déclencheur _Mouvement détecté par Ring_, caméra = Allée, ce
+  qui a bougé = Personne → condition sur l'heure → allumer le projecteur (sa fonctionnalité
+  _Éclairage_) et vos lumières Gladys.
+- **Alarme Ring armée → mode absent dans Gladys** : déclencheur _Mode de l'alarme Ring changé_,
+  nouveau mode = Absent → armer l'alarme de la maison Gladys, éteindre les lumières et le
+  chauffage.
+
+Dans les messages d'une scène, `{{triggerEvent.data.device_name}}` est le nom de la caméra, et
+`{{triggerEvent.data.detection}}` ce qui a bougé (`person`, `vehicle`, `package` ou `motion`).
+
+## Comment l'intégration parle à Ring, et à quel rythme
+
+Ring n'a pas d'API publique. L'intégration utilise
+[ring-client-api](https://github.com/dgreif/ring), la bibliothèque libre derrière Homebridge Ring,
+qui parle au cloud Ring comme le fait l'application Ring. Tout passe par le cloud : les appareils
+Ring n'offrent aucun accès local.
+
+- **Appuis et mouvements** arrivent en temps réel par **notifications push**, le canal de
+  l'application Ring (Firebase Cloud Messaging). Il faut des connexions sortantes vers
+  `mtalk.google.com` sur le port TCP 5228 : si votre pare-feu ou votre bloqueur de publicité DNS
+  les bloque, les appuis et mouvements n'arriveront pas.
+- **État des caméras** (batterie, éclairage, sirène, en ligne) : une requête toutes les 60
+  secondes pour tout le compte, le rythme de l'intégration Home Assistant.
+- **Ring Alarm** : poussée en temps réel par une WebSocket, sans interrogation.
+- **Instantanés** : une requête par caméra à l'intervalle choisi, plus une par événement et par
+  demande du tableau de bord (une demande moins de 30 secondes après la précédente la réutilise).
+
+Ring ne publie aucun quota pour cette API. Ces rythmes sont ceux des intégrations établies ;
+merci de ne pas les modifier.
+
+L'intégration tient largement dans le bac à sable de 256 Mo de Gladys : environ 120 Mo au repos,
+environ 190 Mo au pire pendant la réduction d'un gros instantané (mesuré sous Node 22).
+
+## Limites
+
+- **Ni vidéo en direct ni enregistrements** : Gladys affiche des instantanés, pas des flux, et les
+  enregistrements demandent un abonnement Ring Protect. Les deux sont hors périmètre.
+- Une caméra dont la **détection de mouvement est désactivée** (dans l'application Ring ou par un
+  mode Ring) ne prend pas d'instantané : Ring le refuse. Une caméra sur batterie ne peut pas
+  prendre d'instantané pendant qu'on regarde son direct.
+- Les instantanés au-delà de la limite de Gladys (150 Ko) sont réduits avant d'être affichés.
+- Ring Alarm : le clavier, la station de base, le prolongateur, le détecteur de bris de vitre,
+  les boutons d'urgence, les serrures et les thermostats ne sont pas pris en charge. Ring Smart
+  Lighting, les carillons (Chime), l'interphone et les caméras tierces non plus.
+- Gladys n'a pas de catégorie « gel » : la détection de gel du détecteur d'inondation et de gel
+  est une entrée binaire générique. Sa carte d'appareil et les scènes affichent « Gel », mais le
+  tableau de bord montre le libellé générique « État de l'entrée ».
+- **La détection de fumée et de CO est un confort, pas un système de sécurité** : l'alerte
+  n'arrive dans Gladys que si le cloud Ring, votre réseau et Gladys fonctionnent. Gardez la
+  télésurveillance Ring et la sirène du détecteur comme filet de sécurité.
+- L'intégration n'a pas de réglage d'unités : elle affiche des pourcentages, et des dates dans le
+  fuseau horaire de Gladys.
+- Un appui reste actif sur la carte de l'appareil 15 secondes ; un mouvement reste détecté une
+  minute après la dernière notification de Ring.
+
+## Vos données
+
+Le jeton Ring et l'identifiant matériel envoyé à Ring sont stockés dans le dossier propre de
+l'intégration sur votre machine Gladys (`/data`), jamais dans un journal. Le mot de passe, si vous
+en avez saisi un, reste dans la configuration de Gladys jusqu'à ce que vous le vidiez. Rien n'est
+envoyé ailleurs qu'à Ring.
+
+## Crédits
+
+Construite sur [ring-client-api](https://github.com/dgreif/ring) de Dusty Greif et ses
+contributeurs (MIT). Le fonctionnement de l'[intégration Ring](https://www.home-assistant.io/integrations/ring/)
+de Home Assistant (Apache 2.0) a servi de référence.
