@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-09
+
 ## [1.0.1] - 2026-10-09
 
 ### Added
@@ -30,5 +32,6 @@ the notes of the version's GitHub Release.
 - Snapshots above the Gladys 150 KB limit are downsized.
 - English and French documentation.
 
-[Unreleased]: https://github.com/guim31/gladys-ring/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/guim31/gladys-ring/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/guim31/gladys-ring/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/guim31/gladys-ring/releases/tag/v1.0.1
