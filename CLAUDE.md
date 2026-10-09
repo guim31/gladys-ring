@@ -182,6 +182,11 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
   `https://integration-store-storage.gladysassistant.com/index.json`.
 - La règle `data/` du `.gitignore` du template (pour le volume `/data`) exclut aussi `src/data/` :
   l'ancrer en `/data/`, dans `.prettierignore` aussi.
+- Le job « Docker build » de la CI échouait sur `429 Too Many Requests` de Docker Hub en tirant
+  `node:24-alpine` (limite des pulls anonymes, IP partagées des runners GitHub). Le `Dockerfile`
+  tire la même image depuis son miroir officiel `public.ecr.aws/docker/library/node:24-alpine`
+  (même empreinte). Un 429 dans un run déjà passé ne se « corrige » pas : le push suivant relance la
+  CI.
 - Avant la première Release, le validateur sort une seule erreur attendue : `docker_image` n'est
   pas encore publiée (HTTP 403). Tout le reste doit passer.
 
