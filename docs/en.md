@@ -22,6 +22,9 @@ LLC.
 | Ring Alarm (security panel)                                | **Alarm mode**: Disarmed, Home, Away (read-only unless you allow control)      |
 | Ring Alarm contact sensors                                 | Open/closed, tamper, battery                                                   |
 | Ring Alarm motion detectors                                | Motion, tamper, battery                                                        |
+| Ring Alarm Flood & Freeze Sensor, Ring water sensor        | **Leak**, **freeze** (flood & freeze model), tamper, battery                   |
+| Ring Alarm Smoke & CO Listener, Kidde smoke/CO alarm       | **Smoke**, **carbon monoxide**                                                 |
+| Smoke alarms and CO alarms paired with the Ring Alarm      | **Smoke** or **carbon monoxide**, tamper, battery                              |
 
 Every camera also shows its connection on its card: **Cloud** when online, **Unreachable** when
 Ring reports it offline.
@@ -145,9 +148,15 @@ The integration runs comfortably within Gladys' 256 MB sandbox: about 120 MB at 
   snapshot: Ring refuses it. Battery cameras cannot take a snapshot while someone watches their
   live view.
 - Snapshots above the Gladys limit (150 KB) are downsized before being shown.
-- Only the Ring Alarm **security panel, contact sensors and motion detectors** are supported for
-  now: not the keypad, flood/freeze, smoke/CO listener, glass break or range extender. Ring Smart
-  Lighting, Chimes, Intercom and third-party cameras are not supported either.
+- Ring Alarm: the keypad, base station, range extender, glass break sensor, panic buttons, locks
+  and thermostats are not supported. Neither are Ring Smart Lighting, Chimes, Intercom and
+  third-party cameras.
+- Gladys has no "freeze" category: the freeze detection of the Flood & Freeze Sensor is a generic
+  binary input. Its device card and scenes show "Freeze", but the dashboard shows the generic
+  label "State of input".
+- **Smoke and CO detection is a convenience, not a safety system**: the alarm reaches Gladys only
+  if Ring's cloud, your network and Gladys are all up. Keep Ring's own monitoring and the
+  detector's siren as your safety net.
 - The integration has no settings of its own for units: it shows percentages, and dates in your
   Gladys time zone (12-hour clock in English).
 - A press stays active on the device card for 15 seconds; a motion stays detected for a minute

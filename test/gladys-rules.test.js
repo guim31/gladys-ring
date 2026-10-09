@@ -58,8 +58,9 @@ function allDevices() {
 const devices = allDevices();
 
 test('the fixtures cover several models', () => {
-  // 7 cameras, 1 alarm (x2 control modes), 3 sensors, in 2 languages.
-  assert.equal(devices.length, (7 + 2 + 3) * 2);
+  // 7 cameras, 1 alarm (x2 control modes), 9 sensors (contact x2, motion,
+  // flood/freeze, water, smoke, CO, smoke/CO listener, Kidde), in 2 languages.
+  assert.equal(devices.length, (7 + 2 + 9) * 2);
 });
 
 for (const device of devices) {

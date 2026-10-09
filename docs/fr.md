@@ -15,14 +15,17 @@ Ring LLC.
 
 ## Ce que vous obtenez
 
-| Appareil Ring                                               | Dans Gladys                                                                                |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Sonnettes vidéo (filaires, sur batterie, Pro, Elite, judas) | Instantané, **appui sonnette**, mouvement, batterie (modèles sur batterie)                 |
-| Stick Up Cam, Indoor Cam                                    | Instantané, mouvement, batterie (modèles sur batterie)                                     |
-| Spotlight Cam, Floodlight Cam                               | Instantané, mouvement, batterie (modèles sur batterie), **éclairage**, **sirène**          |
-| Ring Alarm (centrale)                                       | **Mode de l'alarme** : Désarmée, Domicile, Absent (lecture seule sauf si vous l'autorisez) |
-| Détecteurs d'ouverture Ring Alarm                           | Ouvert/fermé, sabotage, batterie                                                           |
-| Détecteurs de mouvement Ring Alarm                          | Mouvement, sabotage, batterie                                                              |
+| Appareil Ring                                                   | Dans Gladys                                                                                |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Sonnettes vidéo (filaires, sur batterie, Pro, Elite, judas)     | Instantané, **appui sonnette**, mouvement, batterie (modèles sur batterie)                 |
+| Stick Up Cam, Indoor Cam                                        | Instantané, mouvement, batterie (modèles sur batterie)                                     |
+| Spotlight Cam, Floodlight Cam                                   | Instantané, mouvement, batterie (modèles sur batterie), **éclairage**, **sirène**          |
+| Ring Alarm (centrale)                                           | **Mode de l'alarme** : Désarmée, Domicile, Absent (lecture seule sauf si vous l'autorisez) |
+| Détecteurs d'ouverture Ring Alarm                               | Ouvert/fermé, sabotage, batterie                                                           |
+| Détecteurs de mouvement Ring Alarm                              | Mouvement, sabotage, batterie                                                              |
+| Détecteur d'inondation et de gel Ring Alarm, capteur d'eau Ring | **Fuite**, **gel** (modèle inondation et gel), sabotage, batterie                          |
+| Écouteur fumée et CO Ring Alarm, détecteur fumée/CO Kidde       | **Fumée**, **monoxyde de carbone**                                                         |
+| Détecteurs de fumée et de CO associés à Ring Alarm              | **Fumée** ou **monoxyde de carbone**, sabotage, batterie                                   |
 
 Chaque caméra affiche aussi sa connexion sur sa carte : **Cloud** quand elle est en ligne,
 **Injoignable** quand Ring la signale hors ligne.
@@ -158,10 +161,15 @@ environ 190 Mo au pire pendant la réduction d'un gros instantané (mesuré sous
   mode Ring) ne prend pas d'instantané : Ring le refuse. Une caméra sur batterie ne peut pas
   prendre d'instantané pendant qu'on regarde son direct.
 - Les instantanés au-delà de la limite de Gladys (150 Ko) sont réduits avant d'être affichés.
-- Seuls la **centrale, les détecteurs d'ouverture et les détecteurs de mouvement** de Ring Alarm
-  sont pris en charge pour l'instant : pas le clavier, les détecteurs d'inondation/gel, l'écouteur
-  de fumée/CO, le bris de vitre ni le prolongateur. Ring Smart Lighting, les carillons (Chime),
-  l'interphone et les caméras tierces ne sont pas pris en charge non plus.
+- Ring Alarm : le clavier, la station de base, le prolongateur, le détecteur de bris de vitre,
+  les boutons d'urgence, les serrures et les thermostats ne sont pas pris en charge. Ring Smart
+  Lighting, les carillons (Chime), l'interphone et les caméras tierces non plus.
+- Gladys n'a pas de catégorie « gel » : la détection de gel du détecteur d'inondation et de gel
+  est une entrée binaire générique. Sa carte d'appareil et les scènes affichent « Gel », mais le
+  tableau de bord montre le libellé générique « État de l'entrée ».
+- **La détection de fumée et de CO est un confort, pas un système de sécurité** : l'alerte
+  n'arrive dans Gladys que si le cloud Ring, votre réseau et Gladys fonctionnent. Gardez la
+  télésurveillance Ring et la sirène du détecteur comme filet de sécurité.
 - L'intégration n'a pas de réglage d'unités : elle affiche des pourcentages, et des dates dans le
   fuseau horaire de Gladys.
 - Un appui reste actif sur la carte de l'appareil 15 secondes ; un mouvement reste détecté une

@@ -17,6 +17,8 @@ the notes of the version's GitHub Release.
   online/offline badge.
 - Ring Alarm: alarm mode (disarmed, home, away), read-only unless allowed in the configuration;
   contact sensors and motion detectors with tamper and battery.
+- Ring Alarm flood & freeze sensor, water sensor, freeze sensor, smoke alarm, CO alarm, Smoke & CO
+  Listener and Kidde smoke/CO alarm: leak, freeze, smoke and carbon monoxide detection.
 - Sign-in from the Configuration screen with two-step verification (send then confirm a code), or
   with a refresh token from `ring-auth-cli`. The token Ring renews is kept in `/data`.
 - Scene triggers: doorbell pressed, motion detected (person, vehicle, package, other motion),

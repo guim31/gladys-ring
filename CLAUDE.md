@@ -207,5 +207,11 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
   remplacent.
 - `sharp` installe aussi `@img/sharp-wasm32` (9 Mo, dépendance optionnelle sans contrainte de
   plateforme) : sans effet, ne pas s'en inquiéter.
+- Capteurs de l'alarme : chaque type Ring se lit comme dans homebridge-ring (même dépôt que la
+  bibliothèque) — inondation `flood.faulted`, gel `freeze.faulted`, eau et gel seul `faulted`,
+  fumée/CO `alarmStatus === 'active'`, écouteur et Kidde `smoke`/`co` ou
+  `components['alarm.smoke'|'alarm.co']`. Le gel n'a pas de catégorie Gladys : `input/binary`,
+  affiché « État de l'entrée » sur le tableau de bord (seul de son type). La table
+  `SENSOR_KINDS` de `src/devices/alarm.js` est le seul endroit à compléter pour un nouveau type.
 - Dans une session de code, `dockerd` démarre, mais les images de Docker Hub sont refusées par le
   proxy (429/403) : impossible de construire l'image ou de mesurer la mémoire sous Alpine ici.

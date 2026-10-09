@@ -10,7 +10,8 @@ video doorbells, cameras and the Ring Alarm** into Gladys:
 - **battery level**, **floodlight / spotlight** and **siren** control;
 - a **Ring doorbell dashboard widget**: last snapshot, last ring and motion with their time,
   buttons for the snapshot, the light and the siren;
-- the **Ring Alarm** mode (disarmed / home / away), its contact sensors and motion detectors.
+- the **Ring Alarm** mode (disarmed / home / away), its contact sensors, motion detectors,
+  flood & freeze and water sensors, smoke and CO alarms (Smoke & CO Listener, Kidde).
 
 > **Developed without the hardware: feedback welcome.** Everything is tested against recorded and
 > anonymized Ring API data, not real devices. Please report how it behaves with your models in the
@@ -49,8 +50,10 @@ full walkthrough is in [`docs/en.md`](docs/en.md).
   of the Home Assistant and Homebridge integrations (camera status every 60 s for the whole
   account, push notifications for events, WebSocket for the alarm, snapshots every 30 min by
   default).
-- Ring Alarm: security panel, contact sensors and motion detectors only for now. No Ring Smart
-  Lighting, Chime, Intercom or third-party cameras.
+- Ring Alarm: no keypad, base station, range extender, glass break, panic button, lock or
+  thermostat yet. No Ring Smart Lighting, Chime, Intercom or third-party cameras.
+- Smoke and CO detection is a convenience, not a safety system: it depends on Ring's cloud, the
+  network and Gladys.
 - Arming and disarming the Ring Alarm from Gladys is off by default (a configuration switch).
 - Memory: about 120 MB at rest, about 190 MB at worst while shrinking a large snapshot, in the
   256 MB Gladys sandbox (measured on Node 22, glibc; not yet measured inside the Alpine image).

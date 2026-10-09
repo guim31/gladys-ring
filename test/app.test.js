@@ -29,9 +29,15 @@ test('a pasted token signs in and publishes every supported device', async () =>
   assert.equal(gladys.connectionStatuses.at(-1).connected, true);
   const ids = gladys.discovered.map((d) => d.external_id).sort();
   assert.deepEqual(ids, [
+    'ext:ring:alarm-sensor:zid-co-0001',
     'ext:ring:alarm-sensor:zid-contact-0001',
     'ext:ring:alarm-sensor:zid-contact-0002',
+    'ext:ring:alarm-sensor:zid-flood-0001',
+    'ext:ring:alarm-sensor:zid-kidde-0001',
+    'ext:ring:alarm-sensor:zid-listener-0001',
     'ext:ring:alarm-sensor:zid-motion-0001',
+    'ext:ring:alarm-sensor:zid-smoke-0001',
+    'ext:ring:alarm-sensor:zid-water-0001',
     'ext:ring:alarm:loc-0001',
     cam(10000001),
     cam(10000002),
@@ -383,9 +389,52 @@ test('when Gladys comes back, devices, states and transports are sent again', as
   gladys.discovered = [];
   await app.onGladysConnected();
   assert.equal(factory.created.length, 1, 'the Ring session is kept');
-  assert.equal(gladys.discovered.length, 11);
+  assert.equal(gladys.discovered.length, 17);
   assert.equal(gladys.lastState(`${cam(10000004)}:battery`), 64);
   assert.equal(gladys.transports.length, 7);
   assert.equal(gladys.connectionStatuses.at(-1).connected, true);
   app.stop();
+});
+
+test('flood, freeze, water, smoke and CO detectors publish their alarms', async () => {
+  const { gladys, account, app } = await setup();
+  const sensor = (zid, key) => gladys.lastState(`ext:ring:alarm-sensor:${zid}:${key}`);
+  assert.equal(sensor('zid-flood-0001', 'leak'), 0);
+  assert.equal(sensor('zid-flood-0001', 'freeze'), 0);
+  assert.equal(sensor('zid-water-0001', 'leak'), 1);
+  assert.equal(sensor('zid-smoke-0001', 'smoke'), 0);
+  assert.equal(sensor('zid-co-0001', 'co'), 1);
+  assert.equal(sensor('zid-listener-0001', 'smoke'), 1);
+  assert.equal(sensor('zid-listener-0001', 'co'), 0);
+  assert.equal(sensor('zid-kidde-0001', 'smoke'), 0);
+  assert.equal(sensor('zid-kidde-0001', 'co'), 1);
+  assert.equal(sensor('zid-kidde-0001', 'tamper'), undefined, 'no tamper reported, no feature');
+
+  // The basement floods, then freezes.
+  const flood = account.locations[0].alarmDevices.find((d) => d.zid === 'zid-flood-0001');
+  flood.updateData({ flood: { faulted: true } });
+  await flush();
+  assert.equal(sensor('zid-flood-0001', 'leak'), 1);
+  flood.updateData({ freeze: { faulted: true } });
+  await flush();
+  assert.equal(sensor('zid-flood-0001', 'freeze'), 1);
+
+  // The Kidde alarm sounds for smoke.
+  const kidde = account.locations[0].alarmDevices.find((d) => d.zid === 'zid-kidde-0001');
+  kidde.updateData({
+    components: {
+      'alarm.smoke': { alarmStatus: 'active' },
+      'alarm.co': { alarmStatus: 'inactive' },
+    },
+  });
+  await flush();
+  assert.equal(sensor('zid-kidde-0001', 'smoke'), 1);
+  assert.equal(sensor('zid-kidde-0001', 'co'), 0);
+  app.stop();
+});
+
+test('the keypad and the base station are not published', async () => {
+  const { gladys } = await setup({ createAll: false });
+  const ids = gladys.discovered.map((d) => d.external_id);
+  assert.ok(!ids.some((id) => id.includes('zid-keypad') || id.includes('zid-hub')));
 });

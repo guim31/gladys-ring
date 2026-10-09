@@ -19,6 +19,10 @@ export const TEXTS = {
   featureAlarmMode: { en: 'Alarm mode', fr: "Mode de l'alarme" },
   featureContact: { en: 'Open', fr: 'Ouvert' },
   featureTamper: { en: 'Tamper', fr: 'Sabotage' },
+  featureLeak: { en: 'Leak', fr: 'Fuite' },
+  featureFreeze: { en: 'Freeze', fr: 'Gel' },
+  featureSmoke: { en: 'Smoke', fr: 'Fumée' },
+  featureCo: { en: 'Carbon monoxide', fr: 'Monoxyde de carbone' },
 
   alarmDeviceName: { en: 'Ring Alarm', fr: 'Alarme Ring' },
   modeDisarmed: { en: 'Disarmed', fr: 'Désarmée' },
