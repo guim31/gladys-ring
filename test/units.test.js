@@ -13,7 +13,7 @@ import { fitJpeg, fitsCameraImage } from '../src/image.js';
 import { redact } from '../src/ring/logs.js';
 import { isAuthError } from '../src/ring/session.js';
 import { batteryLevel, cameraCapabilities, modelName } from '../src/devices/camera.js';
-import { modeFromRing } from '../src/devices/alarm.js';
+import { OPENING_SENSOR_STATE, modeFromRing, sensorStates } from '../src/devices/alarm.js';
 import { NOTIFICATIONS, RING_DEVICES, SMALL_JPEG, makeLargeJpeg } from './helpers/fakeRing.js';
 import { tempDir } from './helpers/setup.js';
 
@@ -150,4 +150,25 @@ test('camera capabilities come from the device data', () => {
   assert.equal(modelName('future_kind'), 'Ring Camera');
   assert.equal(modeFromRing('some'), 'home');
   assert.equal(modeFromRing('weird'), null);
+});
+
+test('opening sensors follow the Gladys convention: open = 0, closed = 1', () => {
+  // server/utils/constants.js of the Gladys core: OPENING_SENSOR_STATE = { OPEN: 0, CLOSE: 1 }.
+  assert.deepEqual(OPENING_SENSOR_STATE, { OPEN: 0, CLOSED: 1 });
+  const contact = (faulted) =>
+    sensorStates({ deviceType: 'sensor.contact', faulted, tamperStatus: 'ok' }).find(
+      ([key]) => key === 'contact',
+    )[1];
+  assert.equal(contact(true), 0, 'Ring faulted = open = 0');
+  assert.equal(contact(false), 1, 'closed = 1');
+  // Every other detection keeps 1 = detected.
+  const motion = sensorStates({
+    deviceType: 'sensor.motion',
+    faulted: true,
+    tamperStatus: 'tamper',
+  });
+  assert.deepEqual(motion, [
+    ['motion', 1],
+    ['tamper', 1],
+  ]);
 });

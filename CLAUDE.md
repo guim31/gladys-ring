@@ -126,6 +126,10 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
 - Les **noms de fonctionnalités sont figés à la création**. Et quand une fonctionnalité est seule
   de son type sur l'appareil, le tableau de bord affiche le libellé générique du type à la place
   du nom publié.
+- **Détecteur d'ouverture inversé** : `OPENING_SENSOR_STATE = { OPEN: 0, CLOSE: 1 }`
+  (`server/utils/constants.js`), le front affiche « Ouvert » sur 0 et Zigbee2MQTT publie `contact`
+  avec `reversedValue: true`. Seule cette catégorie : mouvement, fuite, fumée, sabotage… restent à
+  1 = détecté.
 - **Aucune commande d'appareil ne permet un choix multiple** : un `text/select` n'a qu'un choix
   actif.
 - Un changement de structure fait proposer « Mettre à jour » dans l'onglet Découverte

@@ -120,7 +120,9 @@ test('states wait for the user to add the device, then only changes are sent', a
     'wired Doorbell Pro: no battery',
   );
   assert.deepEqual(gladys.lastState('ext:ring:alarm:loc-0001:mode'), { text: 'disarmed' });
-  assert.equal(gladys.lastState('ext:ring:alarm-sensor:zid-contact-0002:contact'), 1);
+  // Kitchen Window is open (faulted): 0 in Gladys, whose opening sensors use 0 = open.
+  assert.equal(gladys.lastState('ext:ring:alarm-sensor:zid-contact-0002:contact'), 0);
+  assert.equal(gladys.lastState('ext:ring:alarm-sensor:zid-contact-0001:contact'), 1);
   assert.equal(gladys.lastState('ext:ring:alarm-sensor:zid-motion-0001:tamper'), 1);
   assert.equal(gladys.widgetRefreshes.length, 0, 'the widget nudge goes through the listener');
 
@@ -142,7 +144,7 @@ test('states wait for the user to add the device, then only changes are sent', a
   const sensor = account.locations[0].alarmDevices.find((d) => d.zid === 'zid-contact-0001');
   sensor.updateData({ faulted: true });
   await flush();
-  assert.equal(gladys.lastState('ext:ring:alarm-sensor:zid-contact-0001:contact'), 1);
+  assert.equal(gladys.lastState('ext:ring:alarm-sensor:zid-contact-0001:contact'), 0);
   app.stop();
 });
 

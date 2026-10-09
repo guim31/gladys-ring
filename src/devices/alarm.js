@@ -42,6 +42,9 @@ export const SENSOR_FEATURES = {
   BATTERY: 'battery',
 };
 
+// Values of an opening sensor in Gladys (server/utils/constants.js).
+export const OPENING_SENSOR_STATE = { OPEN: 0, CLOSED: 1 };
+
 const active = (status) => (status === 'active' ? 1 : 0);
 const smokeOf = (data) =>
   active(data.smoke?.alarmStatus ?? data.components?.['alarm.smoke']?.alarmStatus);
@@ -54,7 +57,10 @@ const DETECTIONS = {
     key: SENSOR_FEATURES.CONTACT,
     category: DEVICE_FEATURE_CATEGORIES.OPENING_SENSOR,
     name: 'featureContact',
-    read: (data) => (data.faulted ? 1 : 0),
+    // Gladys' convention is inverted for this category only:
+    // OPENING_SENSOR_STATE = { OPEN: 0, CLOSE: 1 } (the core constants, the
+    // front shows "Open" on 0). Ring's `faulted` means open.
+    read: (data) => (data.faulted ? OPENING_SENSOR_STATE.OPEN : OPENING_SENSOR_STATE.CLOSED),
   },
   motion: {
     key: SENSOR_FEATURES.MOTION,

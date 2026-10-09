@@ -17,7 +17,7 @@ export const TEXTS = {
   featureLight: { en: 'Light', fr: 'Éclairage' },
   featureSiren: { en: 'Siren', fr: 'Sirène' },
   featureAlarmMode: { en: 'Alarm mode', fr: "Mode de l'alarme" },
-  featureContact: { en: 'Open', fr: 'Ouvert' },
+  featureContact: { en: 'Opening', fr: 'Ouverture' },
   featureTamper: { en: 'Tamper', fr: 'Sabotage' },
   featureLeak: { en: 'Leak', fr: 'Fuite' },
   featureFreeze: { en: 'Freeze', fr: 'Gel' },
