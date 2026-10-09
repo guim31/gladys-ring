@@ -1,0 +1,381 @@
+{
+  "_comment": "Anonymized response of GET clients_api/ring_devices, shaped after the Home Assistant ring test fixtures (Apache-2.0) and the CameraData type of ring-client-api (MIT). Ids, names and places are invented.",
+  "doorbots": [
+    {
+      "id": 10000001,
+      "device_id": "aabbcc000001",
+      "kind": "lpd_v1",
+      "description": "Front Door",
+      "location_id": "loc-0001",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "online"
+      },
+      "battery_life": 4081,
+      "external_connection": false,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": true,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"]
+      },
+      "subscribed": true,
+      "subscribed_motions": true
+    },
+    {
+      "id": 10000002,
+      "device_id": "aabbcc000002",
+      "kind": "cocoa_doorbell_v2",
+      "description": "Side Gate",
+      "location_id": "loc-0001",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "online"
+      },
+      "battery_life": "87",
+      "external_connection": false,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": true,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"],
+        "power_mode": "battery"
+      },
+      "subscribed": true,
+      "subscribed_motions": true
+    }
+  ],
+  "authorized_doorbots": [
+    {
+      "id": 10000006,
+      "device_id": "aabbcc000006",
+      "kind": "doorbell_v4",
+      "description": "Shared Doorbell",
+      "location_id": "loc-0002",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "online"
+      },
+      "battery_life": 100,
+      "external_connection": false,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": true,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"],
+        "power_mode": "battery"
+      },
+      "subscribed": true,
+      "subscribed_motions": true
+    }
+  ],
+  "stickup_cams": [
+    {
+      "id": 10000003,
+      "device_id": "aabbcc000003",
+      "kind": "hp_cam_v1",
+      "description": "Driveway",
+      "location_id": "loc-0001",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "online"
+      },
+      "battery_life": null,
+      "external_connection": true,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": true,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"],
+        "power_mode": "wired"
+      },
+      "subscribed": true,
+      "subscribed_motions": true,
+      "led_status": "off",
+      "siren_status": {
+        "seconds_remaining": 0
+      }
+    },
+    {
+      "id": 10000004,
+      "device_id": "aabbcc000004",
+      "kind": "stickup_cam_v4",
+      "description": "Backyard",
+      "location_id": "loc-0001",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "online"
+      },
+      "battery_life": 64,
+      "external_connection": false,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": true,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"],
+        "power_mode": "battery"
+      },
+      "subscribed": true,
+      "subscribed_motions": true,
+      "battery_life_2": 92,
+      "led_status": "on",
+      "siren_status": {
+        "seconds_remaining": 25
+      }
+    },
+    {
+      "id": 10000005,
+      "device_id": "aabbcc000005",
+      "kind": "stickup_cam_mini",
+      "description": "Living Room",
+      "location_id": "loc-0001",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "offline"
+      },
+      "battery_life": null,
+      "external_connection": false,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": false,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"],
+        "power_mode": "wired"
+      },
+      "subscribed": true,
+      "subscribed_motions": true
+    },
+    {
+      "id": 10000007,
+      "device_id": "aabbcc000007",
+      "kind": "cocoa_floodlight",
+      "description": "Garage",
+      "location_id": "loc-0002",
+      "time_zone": "America/New_York",
+      "firmware_version": "Up to Date",
+      "address": "",
+      "latitude": 0,
+      "longitude": 0,
+      "owned": true,
+      "owner": {
+        "id": 1000,
+        "email": "owner@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe"
+      },
+      "alerts": {
+        "connection": "online"
+      },
+      "battery_life": null,
+      "external_connection": false,
+      "features": {
+        "motions_enabled": true,
+        "show_recordings": true,
+        "people_only_enabled": false,
+        "shadow_correction_enabled": false,
+        "advanced_motion_enabled": false,
+        "motion_message_enabled": false
+      },
+      "settings": {
+        "motion_detection_enabled": true,
+        "chime_settings": {
+          "duration": 3,
+          "enable": true,
+          "type": 0
+        },
+        "doorbell_volume": 5,
+        "enable_vod": true,
+        "live_view_preset_profile": "highest",
+        "live_view_presets": ["low", "middle", "high", "highest"],
+        "power_mode": "wired"
+      },
+      "subscribed": true,
+      "subscribed_motions": true,
+      "led_status": "off",
+      "siren_status": {
+        "seconds_remaining": 0
+      }
+    }
+  ],
+  "chimes": [
+    {
+      "id": 10000100,
+      "kind": "chime",
+      "description": "Hallway Chime",
+      "location_id": "loc-0001",
+      "alerts": {
+        "connection": "online"
+      }
+    }
+  ],
+  "base_stations": [
+    {
+      "id": 10000200,
+      "location_id": "loc-0001",
+      "kind": "base_station_v1",
+      "description": "Base Station"
+    }
+  ],
+  "beams_bridges": [],
+  "other": [
+    {
+      "id": 10000300,
+      "kind": "intercom_handset_audio",
+      "description": "Intercom",
+      "location_id": "loc-0002",
+      "alerts": {
+        "connection": "online"
+      }
+    }
+  ]
+}

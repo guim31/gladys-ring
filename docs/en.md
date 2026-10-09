@@ -1,59 +1,166 @@
-# Demo Devices Template
+# Ring for Gladys Assistant
 
-This is the user documentation of the integration. Gladys re-hosts this file
-and shows a permanent **Documentation** link to it in the Configuration screen
-(in the user's language, with English as the fallback) — it is when
-configuring that the user needs it most. Keep the short onboarding hints in
-the `section` blocks of the manifest `config_schema`; put the long
-step-by-step (screenshots, troubleshooting…) here.
+Bring your **Ring video doorbells, cameras and Ring Alarm** into Gladys: a doorbell press or a
+motion starts your scenes in real time, the camera snapshot shows on your dashboard, and you can
+switch the floodlight or sound the siren from Gladys.
+
+> **Developed without the hardware: feedback welcome.** This integration was written and tested
+> against recorded Ring API data, not against real devices. If something behaves oddly with your
+> model, please open an issue on the [GitHub repository](https://github.com/guim31/gladys-ring/issues)
+> or post on the Gladys forum: your feedback is what makes it reliable.
+
+Not affiliated with, endorsed by or sponsored by Ring LLC or Amazon. "Ring" is a trademark of Ring
+LLC.
 
 ## What you get
 
-Six demo devices show up after installation: a weather station (real data
-from Open-Meteo), a switch, a dimmable light, a smart plug with power
-metering, a motion sensor and a camera.
+| Ring device                                                | In Gladys                                                                      |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Video doorbells (wired, battery, Pro, Elite, Peephole Cam) | Snapshot, **doorbell press**, motion, battery (battery models)                 |
+| Stick Up Cam, Indoor Cam                                   | Snapshot, motion, battery (battery models)                                     |
+| Spotlight Cam, Floodlight Cam                              | Snapshot, motion, battery (battery models), **light on/off**, **siren on/off** |
+| Ring Alarm (security panel)                                | **Alarm mode**: Disarmed, Home, Away (read-only unless you allow control)      |
+| Ring Alarm contact sensors                                 | Open/closed, tamper, battery                                                   |
+| Ring Alarm motion detectors                                | Motion, tamper, battery                                                        |
 
-## Configuration
+Every camera also shows its connection on its card: **Cloud** when online, **Unreachable** when
+Ring reports it offline.
 
-1. Open the **Configuration** tab of the integration.
-2. Set the **latitude** and **longitude** the demo weather station should
-   observe (they default to Paris), and pick your temperature unit.
-3. Save: the devices appear in the **Discovery** tab, ready to be added.
+On top of the devices:
 
-The **Prefer the local connection** toggle drives the demo plug: it reports
-the channel it actually uses as a badge (local or cloud), with an orange dot
-when it runs degraded (local refused, cloud fallback).
+- **Scene triggers**: _Ring doorbell pressed_, _Ring motion detected_ (filter on what moved:
+  person, vehicle, package or other motion) and _Ring Alarm mode changed_ (from Gladys, the Ring
+  app or a keypad).
+- **Scene actions**: _Take a Ring snapshot_ and _Set the Ring Alarm mode_.
+- **Dashboard widget** _Ring doorbell_: last snapshot, time of the last ring and of the last
+  motion, battery, connection, and buttons to refresh the snapshot, switch the light, and sound
+  the siren (with a confirmation).
 
-## Actions
+Requirements: **Gladys Assistant 5.1 or later** and a Ring account. No Ring Protect plan is needed,
+except for Ring's own smart alerts (person, vehicle, package): without a plan, every motion is
+reported as "other motion".
 
-- **Test the weather provider** — performs a live request to Open-Meteo and
-  shows the current temperature and humidity under the button.
-- **Identify a device** — pick one of your devices in the list and it will
-  signal itself (the demo light "blinks" in the logs).
+## Sign in to Ring
 
-## Scenes
+Ring requires two-step verification on every account, so signing in takes one extra step. You only
+do it once: Ring renews the token regularly, and the integration saves every renewed token in its
+own storage, so it stays signed in across restarts and updates.
 
-The integration adds its own cards to the scene editor (Gladys 5.1 or
-later), under the **Integrations** category:
+### Option 1: from Gladys (recommended)
 
-- **Motion detected** (trigger) — starts the scene when a demo motion sensor
-  sees something move. Optionally pick the sensor and what moved (person,
-  animal); left empty, any detection matches. The following actions can
-  read what moved with `{{triggerEvent.data.target}}`.
-- **Identify a device** (action) — makes the chosen device signal itself.
-  It returns whether the device could signal itself, so the following
-  actions can depend on it.
+1. Open the integration's **Configuration** tab.
+2. Fill in **Ring email** and **Ring password**, then **Save**.
+3. Click **Send a verification code**. Ring sends you a code by text message, email or
+   authenticator app, as set in your Ring account; the message under the button says where.
+4. Type the code in **Confirm the verification code** and run it, within 10 minutes.
+5. The status turns to connected, and your devices appear in the **Discovery** tab.
+6. You can now clear the password field and save: it is not needed anymore.
 
-## Dashboard
+Ring limits verification codes to 10 every 10 minutes: if you asked for too many, wait a little.
 
-Add the **Demo status** widget to a dashboard: it shows the live
-temperature of the weather station and the power of the office plug, the
-connection the plug currently uses (orange when degraded) and the observed
-location. Its **Identify the light** button makes the demo light signal
-itself.
+### Option 2: with a refresh token, from a computer
 
-## Troubleshooting
+If you prefer not to type your password in Gladys, generate a token on any computer with
+[Node.js](https://nodejs.org) installed:
 
-The integration logs everything it does: check the integration logs from the
-Gladys UI (or `docker logs` on the host) with `LOG_LEVEL=debug` for the full
-detail.
+```bash
+npx -p ring-client-api ring-auth-cli
+```
+
+The tool asks for your Ring email, password and verification code, then prints a line like
+`"refreshToken": "eyJydCI6..."`. Copy the long token (between the quotes, without them; pasting the
+whole line works too) into the **Refresh token** field of the Configuration tab, and save.
+
+### Where to see and revoke the access
+
+In the Ring app, the integration shows as **Gladys Assistant** under _Control Center → Authorized
+Client Devices_. Removing it there signs Gladys out.
+
+### "Ring refused the token"
+
+This message means Ring no longer accepts the saved token: it was removed in the Control Center,
+the account password changed, or the token was mistyped. Sign in again with option 1 or 2. The
+integration retries a refused token every 30 minutes on its own, and Ring outages every 5 minutes.
+
+## Add your devices
+
+Open the **Discovery** tab and add the devices you want. Gladys keeps the feature names chosen
+when a device is added: pick the **Language of the device names** in the Configuration tab first
+(English or French).
+
+The camera snapshot appears in the Gladys camera box and in the _Ring doorbell_ widget.
+
+## Options
+
+- **Refresh the snapshots**: every 10, 30 (default) or 60 minutes, or only on events and on
+  request. On top of that, the snapshot of every ring and motion is fetched right away when Ring
+  attached one, and opening a camera on the dashboard asks for a fresh one. Battery cameras are
+  spared: a snapshot asked within 10 minutes of the previous one is reused instead of waking the
+  camera, which would drain the battery.
+- **Allow Gladys to arm and disarm the Ring Alarm**: off by default. When off, the alarm mode is
+  only displayed. When on, anyone who can use your Gladys dashboards and scenes can disarm your
+  alarm: turn it on only if that is what you want. Some sensors (an open window when arming) need a
+  bypass that only the Ring app can grant: Gladys then reports that the mode could not be set.
+
+## Scene ideas
+
+- **Someone rings, picture on my phone**: trigger _Ring doorbell pressed_ → action _Take a Ring
+  snapshot_ on that doorbell → core action _Send a camera image_ of the same camera.
+- **Person in the driveway at night**: trigger _Ring motion detected_, camera = Driveway, what
+  moved = Person → condition on the time → turn on the floodlight (its _Light_ feature) and your
+  Gladys lights.
+- **Ring Alarm armed → Gladys away mode**: trigger _Ring Alarm mode changed_, new mode = Away →
+  set the Gladys house alarm, turn off the lights and the heating.
+
+In the messages of a scene, `{{triggerEvent.data.device_name}}` is the name of the camera, and
+`{{triggerEvent.data.detection}}` what moved (`person`, `vehicle`, `package` or `motion`).
+
+## How it talks to Ring, and how often
+
+Ring has no public API. The integration uses
+[ring-client-api](https://github.com/dgreif/ring), the open source library behind Homebridge
+Ring, which speaks to Ring's cloud the way the Ring app does. Everything goes through the cloud:
+Ring devices offer no local access.
+
+- **Presses and motions** arrive in real time as **push notifications**, the same channel as the
+  Ring app (Firebase Cloud Messaging). It needs outgoing connections to `mtalk.google.com` on TCP
+  port 5228: if your firewall or DNS ad blocker blocks them, presses and motions will not arrive.
+- **Camera status** (battery, light, siren, online): one request every 60 seconds for the whole
+  account, the pace of the Home Assistant integration.
+- **Ring Alarm**: pushed in real time over a WebSocket, no polling.
+- **Snapshots**: one request per camera at the interval you chose, plus one per event and per
+  dashboard request (a request made within 30 seconds of the previous one reuses it).
+
+Ring publishes no quota for this API. These rates are those of the established integrations;
+please do not change them.
+
+The integration runs comfortably within Gladys' 256 MB sandbox: about 120 MB at rest, about
+190 MB at worst while shrinking a large snapshot (measured on Node 22).
+
+## Limits
+
+- **No live video and no recordings**: Gladys shows snapshots, not streams, and recordings need a
+  Ring Protect plan. Both are out of scope.
+- A camera whose **motion detection is turned off** (in the Ring app or by a Ring mode) takes no
+  snapshot: Ring refuses it. Battery cameras cannot take a snapshot while someone watches their
+  live view.
+- Snapshots above the Gladys limit (150 KB) are downsized before being shown.
+- Only the Ring Alarm **security panel, contact sensors and motion detectors** are supported for
+  now: not the keypad, flood/freeze, smoke/CO listener, glass break or range extender. Ring Smart
+  Lighting, Chimes, Intercom and third-party cameras are not supported either.
+- The integration has no settings of its own for units: it shows percentages, and dates in your
+  Gladys time zone (12-hour clock in English).
+- A press stays active on the device card for 15 seconds; a motion stays detected for a minute
+  after Ring's last notification.
+
+## Your data
+
+The Ring token and the hardware id sent to Ring are stored in the integration's own folder on your
+Gladys machine (`/data`), never in a log. The password, if you typed one, stays in the Gladys
+configuration until you clear it. Nothing is sent anywhere but to Ring.
+
+## Credits
+
+Built on [ring-client-api](https://github.com/dgreif/ring) by Dusty Greif and contributors (MIT).
+The behavior of the Home Assistant [Ring integration](https://www.home-assistant.io/integrations/ring/)
+(Apache 2.0) served as reference.

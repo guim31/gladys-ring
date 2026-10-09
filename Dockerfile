@@ -16,8 +16,10 @@ RUN apk add --no-cache dumb-init
 WORKDIR /app
 
 # Install the PROD dependencies first (better build cache).
-COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev || npm install --omit=dev
+# .npmrc sets ignore-scripts: the ffmpeg binary ring-client-api would download
+# (live video only) is never installed.
+COPY package.json package-lock.json* .npmrc ./
+RUN npm ci --omit=dev --ignore-scripts
 
 # Then the integration code.
 COPY index.js ./

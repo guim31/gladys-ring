@@ -1,0 +1,86 @@
+{
+  "_comment": "Anonymized Ring Alarm device list of location loc-0001, as flattened by ring-client-api (RingDevice.data; type RingDeviceData). Zids are invented.",
+  "devices": [
+    {
+      "zid": "zid-panel-0001",
+      "name": "Alarm",
+      "deviceType": "security-panel",
+      "categoryId": 2,
+      "mode": "none",
+      "tamperStatus": "ok",
+      "batteryStatus": "none",
+      "tags": [],
+      "alarmInfo": null
+    },
+    {
+      "zid": "zid-hub-0001",
+      "name": "Base Station",
+      "deviceType": "hub.redsky",
+      "categoryId": 2,
+      "batteryLevel": 100,
+      "batteryStatus": "charged",
+      "acStatus": "ok",
+      "tamperStatus": "ok",
+      "tags": [],
+      "volume": 0.5
+    },
+    {
+      "zid": "zid-keypad-0001",
+      "name": "Keypad",
+      "deviceType": "security-keypad",
+      "categoryId": 33,
+      "batteryLevel": 100,
+      "batteryStatus": "charged",
+      "tamperStatus": "ok",
+      "tags": []
+    },
+    {
+      "zid": "zid-contact-0001",
+      "name": "Front Door Contact",
+      "deviceType": "sensor.contact",
+      "categoryId": 5,
+      "faulted": false,
+      "batteryLevel": 95,
+      "batteryStatus": "ok",
+      "tamperStatus": "ok",
+      "tags": []
+    },
+    {
+      "zid": "zid-contact-0002",
+      "name": "Kitchen Window",
+      "deviceType": "sensor.contact",
+      "categoryId": 5,
+      "faulted": true,
+      "batteryStatus": "none",
+      "tamperStatus": "ok",
+      "tags": []
+    },
+    {
+      "zid": "zid-motion-0001",
+      "name": "Hallway Motion",
+      "deviceType": "sensor.motion",
+      "categoryId": 30,
+      "faulted": true,
+      "batteryLevel": 80,
+      "batteryStatus": "ok",
+      "tamperStatus": "tamper",
+      "tags": []
+    },
+    {
+      "zid": "zid-flood-0001",
+      "name": "Basement Flood",
+      "deviceType": "sensor.flood-freeze",
+      "categoryId": 5,
+      "batteryLevel": 90,
+      "batteryStatus": "ok",
+      "tamperStatus": "ok",
+      "flood": {
+        "faulted": false
+      },
+      "freeze": {
+        "faulted": false
+      },
+      "tags": []
+    }
+  ]
+}

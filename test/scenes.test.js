@@ -1,93 +1,58 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { DEVICE_BLUEPRINTS } from '../src/devices/index.js';
-import { MOTION_DETECTED_TRIGGER, motionSensor } from '../src/devices/motionSensor.js';
 import { SCENE_ACTIONS } from '../src/scenes.js';
-import { normalizeConfig } from '../src/config.js';
-import { createFakeGladys } from './helpers/fakeGladys.js';
+import { TOKEN, setup } from './helpers/setup.js';
 
-const manifest = JSON.parse(
-  await readFile(new URL('../gladys-assistant-integration.json', import.meta.url), 'utf8'),
-);
-const config = normalizeConfig();
-
-const declarationOf = (list, key) => manifest[list].find((entry) => entry.key === key);
-const keysOf = (list) => (list ?? []).map((entry) => entry.key);
-const deviceIdOf = (gladys, key) =>
-  DEVICE_BLUEPRINTS.find((bp) => bp.key === key).deviceExternalId(gladys);
-
-// Let the async interval callback run to completion.
-const flush = () => new Promise((resolve) => setImmediate(resolve));
-
-test('the motion sensor fires one motion_detected event per detection, none on the clear', async (t) => {
-  t.mock.timers.enable({ apis: ['setInterval', 'setTimeout'] });
-  const gladys = createFakeGladys();
-  const stopPush = motionSensor.startPush(gladys, config);
-  try {
-    t.mock.timers.tick(60_000);
-    await flush();
-    assert.equal(gladys.sceneEvents.length, 1, 'one detection, one event');
-    assert.equal(gladys.sceneEvents[0].key, MOTION_DETECTED_TRIGGER);
-    assert.equal(gladys.published.at(-1).state, 1, 'the state is still published');
-
-    t.mock.timers.tick(10_000);
-    await flush();
-    assert.equal(gladys.published.at(-1).state, 0, 'the detection is cleared');
-    assert.equal(gladys.sceneEvents.length, 1, 'the clear fires no event');
-  } finally {
-    stopPush();
-  }
+test('take_snapshot publishes a fresh image on the camera and says so', async () => {
+  const { app, gladys } = await setup();
+  const before = gladys.cameraImages.length;
+  const outputs = await SCENE_ACTIONS.take_snapshot(app, {
+    fields: { camera: 'ext:ring:camera:10000002' },
+  });
+  assert.equal(outputs.captured, true);
+  assert.ok(!Number.isNaN(Date.parse(outputs.taken_at)));
+  assert.equal(gladys.cameraImages.length, before + 1);
+  assert.equal(gladys.cameraImages.at(-1).deviceExternalId, 'ext:ring:camera:10000002');
+  app.stop();
 });
 
-test('motion_detected data only carries keys the trigger declares', async (t) => {
-  t.mock.timers.enable({ apis: ['setInterval', 'setTimeout'] });
-  const gladys = createFakeGladys();
-  const stopPush = motionSensor.startPush(gladys, config);
-  try {
-    t.mock.timers.tick(60_000);
-    await flush();
-  } finally {
-    stopPush();
-  }
-  const [{ data }] = gladys.sceneEvents;
-  const trigger = declarationOf('scene_triggers', MOTION_DETECTED_TRIGGER);
-  // The core keeps the `fields` keys (filters) and the `variables` keys
-  // (exposed to the scene): any other key would be silently dropped.
-  const declared = [...keysOf(trigger.fields), ...keysOf(trigger.variables)];
-  for (const [key, value] of Object.entries(data)) {
-    assert.ok(declared.includes(key), `data.${key} is not declared, the core would drop it`);
-    assert.ok(value === null || typeof value !== 'object', `data.${key} must be a primitive`);
-  }
-  // A `"source": "devices"` filter stores a device external_id.
-  assert.equal(data.device, deviceIdOf(gladys, 'motion-sensor'));
-  const targets = trigger.fields.find((field) => field.key === 'target').options;
-  assert.ok(
-    targets.some((option) => option.value === data.target),
-    `data.target "${data.target}" must be one of the filter options`,
+test('take_snapshot reports a failed capture as an output, not as an error', async () => {
+  const { app, account } = await setup();
+  account.cameras.find((c) => c.id === 10000005).snapshotError = new Error('offline');
+  // The scene goes on: the author gates the next action on `captured`.
+  const outputs = await SCENE_ACTIONS.take_snapshot(app, {
+    fields: { camera: 'ext:ring:camera:10000005' },
+  });
+  assert.deepEqual(outputs, { captured: false, taken_at: '' });
+  await assert.rejects(
+    SCENE_ACTIONS.take_snapshot(app, { fields: { camera: 'ext:ring:alarm:loc-0001' } }),
   );
+  app.stop();
 });
 
-test('identify_device signals the chosen device and returns the declared outputs', async () => {
-  const gladys = createFakeGladys();
-  const outputs = await SCENE_ACTIONS.identify_device(gladys, {
-    fields: { device: deviceIdOf(gladys, 'light') },
-    config,
-  });
-  assert.deepEqual(outputs, { signalled: true });
-  const declared = keysOf(declarationOf('scene_actions', 'identify_device').outputs);
-  for (const key of Object.keys(outputs)) {
-    assert.ok(declared.includes(key), `output "${key}" is not declared, the core would drop it`);
-  }
-});
+test('set_alarm_mode needs the control allowed, then switches the Ring mode', async () => {
+  const locked = await setup();
+  await assert.rejects(
+    SCENE_ACTIONS.set_alarm_mode(locked.app, {
+      fields: { alarm: 'ext:ring:alarm:loc-0001', mode: 'home' },
+    }),
+    /disabled/,
+  );
+  locked.app.stop();
 
-test('identify_device reports a device that cannot signal itself through its output', async () => {
-  // Not a failure: a scene action is never a condition, the scene author
-  // gates the following actions on the output instead.
-  const gladys = createFakeGladys();
-  const outputs = await SCENE_ACTIONS.identify_device(gladys, {
-    fields: { device: deviceIdOf(gladys, 'weather-station') },
-    config,
+  const { app, account } = await setup({
+    config: { refresh_token: TOKEN, allow_alarm_control: true },
   });
-  assert.deepEqual(outputs, { signalled: false });
+  const outputs = await SCENE_ACTIONS.set_alarm_mode(app, {
+    fields: { alarm: 'ext:ring:alarm:loc-0001', mode: 'home' },
+  });
+  assert.deepEqual(outputs, { mode: 'home' });
+  assert.deepEqual(account.locations[0].modeCalls, ['some']);
+  await assert.rejects(
+    SCENE_ACTIONS.set_alarm_mode(app, {
+      fields: { alarm: 'ext:ring:camera:10000001', mode: 'home' },
+    }),
+    /Choose a Ring Alarm/,
+  );
+  app.stop();
 });
