@@ -89,7 +89,7 @@ integration retries a refused token every 30 minutes on its own, and Ring outage
 
 Open the **Discovery** tab and add the devices you want. Gladys keeps the feature names chosen
 when a device is added: pick the **Language of the device names** in the Configuration tab first
-(English or French).
+(English, French, German or Spanish).
 
 The camera snapshot appears in the Gladys camera box and in the _Ring doorbell_ widget.
 
