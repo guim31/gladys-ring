@@ -8,7 +8,7 @@
 // `undefined` or with a value typed as a string by a form.
 // -----------------------------------------------------------------------------
 
-export const LANGUAGES = ['en', 'fr'];
+export const LANGUAGES = ['en', 'fr', 'de', 'es'];
 
 // Allowed values of the `snapshot_interval` select, in minutes. 0 = only after
 // a ring, a motion or an explicit request. Ring battery cameras never refresh

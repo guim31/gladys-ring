@@ -18,6 +18,7 @@ import { buildCameraDevice } from '../src/devices/camera.js';
 import { buildAlarmDevice, buildSensorDevice, isSupportedSensor } from '../src/devices/alarm.js';
 import { buildFakeAccount } from './helpers/fakeRing.js';
 import { createFakeGladys } from './helpers/fakeGladys.js';
+import { LANGUAGES } from '../src/config.js';
 
 const table = JSON.parse(
   readFileSync(new URL('./fixtures/gladys-feature-table.json', import.meta.url), 'utf8'),
@@ -27,7 +28,7 @@ function allDevices() {
   const gladys = createFakeGladys();
   const account = buildFakeAccount();
   const devices = [];
-  for (const language of ['en', 'fr']) {
+  for (const language of LANGUAGES) {
     for (const camera of account.cameras) {
       devices.push(
         buildCameraDevice(gladys, { data: camera.data, isDoorbot: camera.isDoorbot }, language),
@@ -59,8 +60,8 @@ const devices = allDevices();
 
 test('the fixtures cover several models', () => {
   // 7 cameras, 1 alarm (x2 control modes), 9 sensors (contact x2, motion,
-  // flood/freeze, water, smoke, CO, smoke/CO listener, Kidde), in 2 languages.
-  assert.equal(devices.length, (7 + 2 + 9) * 2);
+  // flood/freeze, water, smoke, CO, smoke/CO listener, Kidde), in every language.
+  assert.equal(devices.length, (7 + 2 + 9) * LANGUAGES.length);
 });
 
 for (const device of devices) {

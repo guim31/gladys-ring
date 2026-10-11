@@ -16,30 +16,44 @@ export const SIGN_IN_MESSAGES = {
   missingCredentials: {
     en: 'Fill in the Ring email and password fields of the configuration and save first.',
     fr: "Renseignez d'abord l'e-mail et le mot de passe Ring dans la configuration, puis enregistrez.",
+    de: 'Trage zuerst die E-Mail-Adresse und das Passwort von Ring in der Konfiguration ein und speichere.',
+    es: 'Introduzca primero el correo electrónico y la contraseña de Ring en la configuración y guarde.',
   },
   codeSent: (prompt) => ({
     en: `Ring sent you a verification code${prompt ? ` (${prompt})` : ''}. Enter it in "Confirm the verification code" within 10 minutes.`,
     fr: `Ring vous a envoyé un code de vérification${prompt ? ` (${prompt})` : ''}. Saisissez-le dans « Confirmer le code de vérification » sous 10 minutes.`,
+    de: `Ring hat dir einen Verifizierungscode geschickt${prompt ? ` (${prompt})` : ''}. Gib ihn innerhalb von 10 Minuten in „Verifizierungscode bestätigen“ ein.`,
+    es: `Ring le ha enviado un código de verificación${prompt ? ` (${prompt})` : ''}. Introdúzcalo en «Confirmar el código de verificación» en un plazo de 10 minutos.`,
   }),
   signedIn: {
     en: 'Signed in to Ring. The token is saved in the integration; you can now clear the password field.',
     fr: "Connecté à Ring. Le jeton est enregistré dans l'intégration ; vous pouvez maintenant vider le champ mot de passe.",
+    de: 'Bei Ring angemeldet. Das Token ist in der Integration gespeichert; du kannst das Passwortfeld jetzt leeren.',
+    es: 'Sesión iniciada en Ring. El token se ha guardado en la integración; ya puede vaciar el campo de la contraseña.',
   },
   wrongCredentials: {
     en: 'Ring refused the email or the password.',
     fr: "Ring a refusé l'e-mail ou le mot de passe.",
+    de: 'Ring hat die E-Mail-Adresse oder das Passwort abgelehnt.',
+    es: 'Ring ha rechazado el correo electrónico o la contraseña.',
   },
   tooManyCodes: {
     en: 'Ring limits verification codes to 10 every 10 minutes. Wait 10 minutes and try again.',
     fr: 'Ring limite les codes de vérification à 10 toutes les 10 minutes. Attendez 10 minutes puis réessayez.',
+    de: 'Ring begrenzt die Verifizierungscodes auf 10 alle 10 Minuten. Warte 10 Minuten und versuche es erneut.',
+    es: 'Ring limita los códigos de verificación a 10 cada 10 minutos. Espere 10 minutos y vuelva a intentarlo.',
   },
   noPending: {
     en: 'No code is pending: run "Send a verification code" first (a code is valid 10 minutes).',
     fr: "Aucun code en attente : lancez d'abord « Envoyer un code de vérification » (un code vaut 10 minutes).",
+    de: 'Kein Code ausstehend: Führe zuerst „Verifizierungscode senden“ aus (ein Code gilt 10 Minuten).',
+    es: 'No hay ningún código pendiente: ejecute primero «Enviar un código de verificación» (un código es válido 10 minutos).',
   },
   wrongCode: {
     en: 'Ring refused this code. Check it and try again, or ask for a new one.',
     fr: 'Ring a refusé ce code. Vérifiez-le et réessayez, ou demandez-en un nouveau.',
+    de: 'Ring hat diesen Code abgelehnt. Prüfe ihn und versuche es erneut, oder fordere einen neuen an.',
+    es: 'Ring ha rechazado este código. Compruébelo y vuelva a intentarlo, o solicite uno nuevo.',
   },
 };
 

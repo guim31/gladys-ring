@@ -4,7 +4,9 @@
   "name": "Ring",
   "description": {
     "en": "Ring doorbells, cameras and Ring Alarm: presses, motion, snapshots, lights and sirens.",
-    "fr": "Sonnettes, caméras et alarme Ring : appuis, mouvements, instantanés, éclairages et sirènes."
+    "fr": "Sonnettes, caméras et alarme Ring : appuis, mouvements, instantanés, éclairages et sirènes.",
+    "de": "Ring-Türklingeln, Kameras und Ring Alarm: Klingeln, Bewegung, Schnappschüsse, Licht, Sirenen.",
+    "es": "Timbres, cámaras y alarma Ring: pulsaciones, movimiento, instantáneas, luces y sirenas."
   },
   "version": "1.0.2",
   "docker_image": "ghcr.io/guim31/gladys-ring:1.0.2",
@@ -16,58 +18,106 @@
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Sign in to Ring", "fr": "Connexion à Ring" },
+      "label": {
+        "en": "Sign in to Ring",
+        "fr": "Connexion à Ring",
+        "de": "Bei Ring anmelden",
+        "es": "Iniciar sesión en Ring"
+      },
       "description": {
         "en": "Ring requires two-step verification. Either paste a refresh token obtained on a computer with \"npx -p ring-client-api ring-auth-cli\", or fill in your Ring email and password, save, then run the two actions \"Send a verification code\" and \"Confirm the verification code\" below. The integration keeps the token Ring renews in its own storage: you only sign in once.",
-        "fr": "Ring impose la vérification en deux étapes. Collez un jeton de rafraîchissement obtenu sur un ordinateur avec « npx -p ring-client-api ring-auth-cli », ou renseignez l'e-mail et le mot de passe de votre compte Ring, enregistrez, puis lancez les deux actions « Envoyer un code de vérification » et « Confirmer le code de vérification » ci-dessous. L'intégration conserve le jeton que Ring renouvelle : vous ne vous connectez qu'une fois."
+        "fr": "Ring impose la vérification en deux étapes. Collez un jeton de rafraîchissement obtenu sur un ordinateur avec « npx -p ring-client-api ring-auth-cli », ou renseignez l'e-mail et le mot de passe de votre compte Ring, enregistrez, puis lancez les deux actions « Envoyer un code de vérification » et « Confirmer le code de vérification » ci-dessous. L'intégration conserve le jeton que Ring renouvelle : vous ne vous connectez qu'une fois.",
+        "de": "Ring verlangt eine Bestätigung in zwei Schritten. Füge entweder ein Refresh-Token ein, das du auf einem Computer mit „npx -p ring-client-api ring-auth-cli“ erhalten hast, oder gib die E-Mail-Adresse und das Passwort deines Ring-Kontos ein, speichere und führe dann unten die beiden Aktionen „Verifizierungscode senden“ und „Verifizierungscode bestätigen“ aus. Die Integration bewahrt das Token, das Ring erneuert, selbst auf: Du meldest dich nur einmal an.",
+        "es": "Ring exige la verificación en dos pasos. Pegue un token de actualización obtenido en un ordenador con «npx -p ring-client-api ring-auth-cli», o introduzca el correo electrónico y la contraseña de su cuenta Ring, guarde y ejecute a continuación las dos acciones «Enviar un código de verificación» y «Confirmar el código de verificación». La integración conserva el token que Ring renueva: solo tendrá que iniciar sesión una vez."
       },
       "links": [
         {
           "url": "https://github.com/dgreif/ring/wiki/Refresh-Tokens",
-          "label": { "en": "About Ring refresh tokens", "fr": "À propos des jetons Ring" }
+          "label": {
+            "en": "About Ring refresh tokens",
+            "fr": "À propos des jetons Ring",
+            "de": "Über die Refresh-Tokens von Ring",
+            "es": "Acerca de los tokens de actualización de Ring"
+          }
         }
       ]
     },
     {
       "key": "refresh_token",
       "type": "secret",
-      "label": { "en": "Refresh token", "fr": "Jeton de rafraîchissement" },
+      "label": {
+        "en": "Refresh token",
+        "fr": "Jeton de rafraîchissement",
+        "de": "Refresh-Token",
+        "es": "Token de actualización"
+      },
       "description": {
         "en": "Printed by ring-auth-cli. Leave empty to sign in with the email and password below.",
-        "fr": "Affiché par ring-auth-cli. Laissez vide pour vous connecter avec l'e-mail et le mot de passe ci-dessous."
+        "fr": "Affiché par ring-auth-cli. Laissez vide pour vous connecter avec l'e-mail et le mot de passe ci-dessous.",
+        "de": "Wird von ring-auth-cli ausgegeben. Lass das Feld leer, um dich mit der E-Mail-Adresse und dem Passwort unten anzumelden.",
+        "es": "Lo muestra ring-auth-cli. Déjelo vacío para iniciar sesión con el correo electrónico y la contraseña de abajo."
       },
       "required": false
     },
     {
       "key": "email",
       "type": "string",
-      "label": { "en": "Ring email", "fr": "E-mail du compte Ring" },
-      "placeholder": { "en": "you@example.com", "fr": "vous@exemple.fr" },
+      "label": {
+        "en": "Ring email",
+        "fr": "E-mail du compte Ring",
+        "de": "E-Mail-Adresse des Ring-Kontos",
+        "es": "Correo electrónico de Ring"
+      },
+      "placeholder": {
+        "en": "you@example.com",
+        "fr": "vous@exemple.fr",
+        "de": "name@beispiel.de",
+        "es": "nombre@ejemplo.es"
+      },
       "required": false
     },
     {
       "key": "password",
       "type": "secret",
-      "label": { "en": "Ring password", "fr": "Mot de passe Ring" },
+      "label": {
+        "en": "Ring password",
+        "fr": "Mot de passe Ring",
+        "de": "Ring-Passwort",
+        "es": "Contraseña de Ring"
+      },
       "description": {
         "en": "Only used by the sign-in actions. You can clear it once signed in.",
-        "fr": "Utilisé seulement par les actions de connexion. Vous pouvez le vider une fois connecté."
+        "fr": "Utilisé seulement par les actions de connexion. Vous pouvez le vider une fois connecté.",
+        "de": "Wird nur von den Anmeldeaktionen verwendet. Nach der Anmeldung kannst du es löschen.",
+        "es": "Solo la usan las acciones de inicio de sesión. Puede borrarla una vez iniciada la sesión."
       },
       "required": false
     },
     {
       "key": "options",
       "type": "section",
-      "label": { "en": "Options", "fr": "Options" },
+      "label": {
+        "en": "Options",
+        "fr": "Options",
+        "de": "Optionen",
+        "es": "Opciones"
+      },
       "description": {
         "en": "Snapshots of battery cameras are reused for 10 minutes, so that refreshing them does not drain the battery.",
-        "fr": "Les instantanés des caméras sur batterie sont réutilisés 10 minutes, pour que leur rafraîchissement ne vide pas la batterie."
+        "fr": "Les instantanés des caméras sur batterie sont réutilisés 10 minutes, pour que leur rafraîchissement ne vide pas la batterie.",
+        "de": "Schnappschüsse von Batteriekameras werden 10 Minuten lang wiederverwendet, damit ihre Aktualisierung die Batterie nicht leert.",
+        "es": "Las instantáneas de las cámaras con batería se reutilizan durante 10 minutos, para que actualizarlas no agote la batería."
       }
     },
     {
       "key": "snapshot_interval",
       "type": "select",
-      "label": { "en": "Refresh the snapshots", "fr": "Rafraîchir les instantanés" },
+      "label": {
+        "en": "Refresh the snapshots",
+        "fr": "Rafraîchir les instantanés",
+        "de": "Schnappschüsse aktualisieren",
+        "es": "Actualizar las instantáneas"
+      },
       "required": false,
       "default": "30",
       "options": [
@@ -75,12 +125,38 @@
           "value": "0",
           "label": {
             "en": "Only on events and on request",
-            "fr": "Seulement sur événement et à la demande"
+            "fr": "Seulement sur événement et à la demande",
+            "de": "Nur bei Ereignissen und auf Anfrage",
+            "es": "Solo con eventos y a petición"
           }
         },
-        { "value": "10", "label": { "en": "Every 10 minutes", "fr": "Toutes les 10 minutes" } },
-        { "value": "30", "label": { "en": "Every 30 minutes", "fr": "Toutes les 30 minutes" } },
-        { "value": "60", "label": { "en": "Every hour", "fr": "Toutes les heures" } }
+        {
+          "value": "10",
+          "label": {
+            "en": "Every 10 minutes",
+            "fr": "Toutes les 10 minutes",
+            "de": "Alle 10 Minuten",
+            "es": "Cada 10 minutos"
+          }
+        },
+        {
+          "value": "30",
+          "label": {
+            "en": "Every 30 minutes",
+            "fr": "Toutes les 30 minutes",
+            "de": "Alle 30 Minuten",
+            "es": "Cada 30 minutos"
+          }
+        },
+        {
+          "value": "60",
+          "label": {
+            "en": "Every hour",
+            "fr": "Toutes les heures",
+            "de": "Jede Stunde",
+            "es": "Cada hora"
+          }
+        }
       ]
     },
     {
@@ -88,11 +164,15 @@
       "type": "boolean",
       "label": {
         "en": "Allow Gladys to arm and disarm the Ring Alarm",
-        "fr": "Autoriser Gladys à armer et désarmer l'alarme Ring"
+        "fr": "Autoriser Gladys à armer et désarmer l'alarme Ring",
+        "de": "Gladys erlauben, Ring Alarm scharf- und unscharfzuschalten",
+        "es": "Permitir que Gladys arme y desarme la alarma Ring"
       },
       "description": {
         "en": "Off: the alarm mode is shown, never changed. On: anyone who can use your Gladys dashboards and scenes can disarm it.",
-        "fr": "Désactivé : le mode de l'alarme est affiché, jamais modifié. Activé : quiconque utilise vos tableaux de bord et scènes Gladys peut la désarmer."
+        "fr": "Désactivé : le mode de l'alarme est affiché, jamais modifié. Activé : quiconque utilise vos tableaux de bord et scènes Gladys peut la désarmer.",
+        "de": "Aus: Der Alarmmodus wird angezeigt, nie geändert. Ein: Jeder, der deine Gladys-Dashboards und -Szenen nutzen kann, kann die Alarmanlage unscharf schalten.",
+        "es": "Desactivado: el modo de la alarma se muestra, nunca se cambia. Activado: cualquiera que pueda usar sus paneles y escenas de Gladys puede desarmarla."
       },
       "required": false,
       "default": false
@@ -100,43 +180,108 @@
     {
       "key": "language",
       "type": "select",
-      "label": { "en": "Language of the device names", "fr": "Langue des noms d'appareils" },
+      "label": {
+        "en": "Language of the device names",
+        "fr": "Langue des noms d'appareils",
+        "de": "Sprache der Gerätenamen",
+        "es": "Idioma de los nombres de dispositivos"
+      },
       "description": {
         "en": "Gladys keeps the feature names chosen when a device is added.",
-        "fr": "Gladys garde les noms de fonctionnalités choisis à l'ajout d'un appareil."
+        "fr": "Gladys garde les noms de fonctionnalités choisis à l'ajout d'un appareil.",
+        "de": "Gladys behält die Funktionsnamen bei, die beim Hinzufügen eines Geräts gewählt wurden.",
+        "es": "Gladys conserva los nombres de funciones elegidos al añadir un dispositivo."
       },
       "required": false,
       "default": "en",
       "options": [
-        { "value": "en", "label": { "en": "English", "fr": "Anglais" } },
-        { "value": "fr", "label": { "en": "French", "fr": "Français" } }
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
       ]
     }
   ],
   "actions": [
     {
       "key": "send_code",
-      "label": { "en": "Send a verification code", "fr": "Envoyer un code de vérification" },
+      "label": {
+        "en": "Send a verification code",
+        "fr": "Envoyer un code de vérification",
+        "de": "Verifizierungscode senden",
+        "es": "Enviar un código de verificación"
+      },
       "description": {
         "en": "Signs in with the saved email and password: Ring sends you a code by SMS, email or authenticator app.",
-        "fr": "Se connecte avec l'e-mail et le mot de passe enregistrés : Ring vous envoie un code par SMS, e-mail ou application."
+        "fr": "Se connecte avec l'e-mail et le mot de passe enregistrés : Ring vous envoie un code par SMS, e-mail ou application.",
+        "de": "Meldet sich mit der gespeicherten E-Mail-Adresse und dem Passwort an: Ring schickt dir einen Code per SMS, E-Mail oder Authenticator-App.",
+        "es": "Inicia sesión con el correo electrónico y la contraseña guardados: Ring le envía un código por SMS, correo electrónico o aplicación de autenticación."
       },
       "timeout_seconds": 60
     },
     {
       "key": "confirm_code",
-      "label": { "en": "Confirm the verification code", "fr": "Confirmer le code de vérification" },
+      "label": {
+        "en": "Confirm the verification code",
+        "fr": "Confirmer le code de vérification",
+        "de": "Verifizierungscode bestätigen",
+        "es": "Confirmar el código de verificación"
+      },
       "description": {
         "en": "Enter the code Ring just sent you (valid 10 minutes).",
-        "fr": "Saisissez le code que Ring vient de vous envoyer (valable 10 minutes)."
+        "fr": "Saisissez le code que Ring vient de vous envoyer (valable 10 minutes).",
+        "de": "Gib den Code ein, den Ring dir gerade geschickt hat (10 Minuten gültig).",
+        "es": "Introduzca el código que Ring acaba de enviarle (válido 10 minutos)."
       },
       "timeout_seconds": 60,
       "fields": [
         {
           "key": "code",
           "type": "string",
-          "label": { "en": "Verification code", "fr": "Code de vérification" },
-          "placeholder": { "en": "123456", "fr": "123456" },
+          "label": {
+            "en": "Verification code",
+            "fr": "Code de vérification",
+            "de": "Verifizierungscode",
+            "es": "Código de verificación"
+          },
+          "placeholder": {
+            "en": "123456",
+            "fr": "123456",
+            "de": "123456",
+            "es": "123456"
+          },
           "required": true
         }
       ]
@@ -145,54 +290,122 @@
   "scene_triggers": [
     {
       "key": "doorbell_pressed",
-      "label": { "en": "Ring doorbell pressed", "fr": "Appui sur une sonnette Ring" },
+      "label": {
+        "en": "Ring doorbell pressed",
+        "fr": "Appui sur une sonnette Ring",
+        "de": "Ring-Türklingel gedrückt",
+        "es": "Timbre Ring pulsado"
+      },
       "description": {
         "en": "Someone pressed the button of a Ring doorbell.",
-        "fr": "Quelqu'un a appuyé sur le bouton d'une sonnette Ring."
+        "fr": "Quelqu'un a appuyé sur le bouton d'une sonnette Ring.",
+        "de": "Jemand hat die Taste einer Ring-Türklingel gedrückt.",
+        "es": "Alguien ha pulsado el botón de un timbre Ring."
       },
       "fields": [
         {
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Doorbell", "fr": "Sonnette" }
+          "label": {
+            "en": "Doorbell",
+            "fr": "Sonnette",
+            "de": "Türklingel",
+            "es": "Timbre"
+          }
         }
       ],
       "variables": [
         {
           "key": "device_name",
           "type": "string",
-          "label": { "en": "Doorbell name", "fr": "Nom de la sonnette" }
+          "label": {
+            "en": "Doorbell name",
+            "fr": "Nom de la sonnette",
+            "de": "Name der Türklingel",
+            "es": "Nombre del timbre"
+          }
         }
       ]
     },
     {
       "key": "motion_detected",
-      "label": { "en": "Ring motion detected", "fr": "Mouvement détecté par Ring" },
+      "label": {
+        "en": "Ring motion detected",
+        "fr": "Mouvement détecté par Ring",
+        "de": "Bewegung von Ring erkannt",
+        "es": "Movimiento detectado por Ring"
+      },
       "description": {
         "en": "A Ring doorbell or camera detected motion.",
-        "fr": "Une sonnette ou caméra Ring a détecté un mouvement."
+        "fr": "Une sonnette ou caméra Ring a détecté un mouvement.",
+        "de": "Eine Ring-Türklingel oder -Kamera hat eine Bewegung erkannt.",
+        "es": "Un timbre o una cámara Ring ha detectado movimiento."
       },
       "fields": [
         {
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Camera", "fr": "Caméra" }
+          "label": {
+            "en": "Camera",
+            "fr": "Caméra",
+            "de": "Kamera",
+            "es": "Cámara"
+          }
         },
         {
           "key": "detection",
           "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
+          "label": {
+            "en": "What moved",
+            "fr": "Ce qui a bougé",
+            "de": "Was sich bewegt hat",
+            "es": "Qué se ha movido"
+          },
           "description": {
             "en": "Person, vehicle and package need Ring smart alerts (Ring Protect plan); otherwise every motion is \"Other motion\".",
-            "fr": "Personne, véhicule et colis demandent les alertes intelligentes Ring (abonnement Ring Protect) ; sinon tout mouvement est « Autre mouvement »."
+            "fr": "Personne, véhicule et colis demandent les alertes intelligentes Ring (abonnement Ring Protect) ; sinon tout mouvement est « Autre mouvement ».",
+            "de": "Person, Fahrzeug und Paket erfordern die intelligenten Benachrichtigungen von Ring (Ring-Protect-Abo); sonst ist jede Bewegung „Andere Bewegung“.",
+            "es": "Persona, vehículo y paquete requieren las alertas inteligentes de Ring (suscripción Ring Protect); si no, todo movimiento es «Otro movimiento»."
           },
           "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "vehicle", "label": { "en": "Vehicle", "fr": "Véhicule" } },
-            { "value": "package", "label": { "en": "Package", "fr": "Colis" } },
-            { "value": "motion", "label": { "en": "Other motion", "fr": "Autre mouvement" } }
+            {
+              "value": "person",
+              "label": {
+                "en": "Person",
+                "fr": "Personne",
+                "de": "Person",
+                "es": "Persona"
+              }
+            },
+            {
+              "value": "vehicle",
+              "label": {
+                "en": "Vehicle",
+                "fr": "Véhicule",
+                "de": "Fahrzeug",
+                "es": "Vehículo"
+              }
+            },
+            {
+              "value": "package",
+              "label": {
+                "en": "Package",
+                "fr": "Colis",
+                "de": "Paket",
+                "es": "Paquete"
+              }
+            },
+            {
+              "value": "motion",
+              "label": {
+                "en": "Other motion",
+                "fr": "Autre mouvement",
+                "de": "Andere Bewegung",
+                "es": "Otro movimiento"
+              }
+            }
           ]
         }
       ],
@@ -200,51 +413,121 @@
         {
           "key": "device_name",
           "type": "string",
-          "label": { "en": "Camera name", "fr": "Nom de la caméra" }
+          "label": {
+            "en": "Camera name",
+            "fr": "Nom de la caméra",
+            "de": "Name der Kamera",
+            "es": "Nombre de la cámara"
+          }
         },
         {
           "key": "detection",
           "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
+          "label": {
+            "en": "What moved",
+            "fr": "Ce qui a bougé",
+            "de": "Was sich bewegt hat",
+            "es": "Qué se ha movido"
+          }
         }
       ]
     },
     {
       "key": "alarm_mode_changed",
-      "label": { "en": "Ring Alarm mode changed", "fr": "Mode de l'alarme Ring changé" },
+      "label": {
+        "en": "Ring Alarm mode changed",
+        "fr": "Mode de l'alarme Ring changé",
+        "de": "Modus von Ring Alarm geändert",
+        "es": "Modo de la alarma Ring cambiado"
+      },
       "description": {
         "en": "The Ring Alarm was armed or disarmed, from Gladys, the Ring app or a keypad.",
-        "fr": "L'alarme Ring a été armée ou désarmée, depuis Gladys, l'application Ring ou un clavier."
+        "fr": "L'alarme Ring a été armée ou désarmée, depuis Gladys, l'application Ring ou un clavier.",
+        "de": "Ring Alarm wurde scharf- oder unscharfgeschaltet, über Gladys, die Ring-App oder ein Keypad.",
+        "es": "La alarma Ring se ha armado o desarmado, desde Gladys, la aplicación Ring o un teclado."
       },
       "fields": [
         {
           "key": "device",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Ring Alarm", "fr": "Alarme Ring" }
+          "label": {
+            "en": "Ring Alarm",
+            "fr": "Alarme Ring",
+            "de": "Ring Alarm",
+            "es": "Alarma Ring"
+          }
         },
         {
           "key": "mode",
           "type": "multi_select",
-          "label": { "en": "New mode", "fr": "Nouveau mode" },
+          "label": {
+            "en": "New mode",
+            "fr": "Nouveau mode",
+            "de": "Neuer Modus",
+            "es": "Nuevo modo"
+          },
           "options": [
-            { "value": "disarmed", "label": { "en": "Disarmed", "fr": "Désarmée" } },
-            { "value": "home", "label": { "en": "Home", "fr": "Domicile" } },
-            { "value": "away", "label": { "en": "Away", "fr": "Absent" } }
+            {
+              "value": "disarmed",
+              "label": {
+                "en": "Disarmed",
+                "fr": "Désarmée",
+                "de": "Unscharf",
+                "es": "Desarmada"
+              }
+            },
+            {
+              "value": "home",
+              "label": {
+                "en": "Home",
+                "fr": "Domicile",
+                "de": "Zuhause",
+                "es": "En casa"
+              }
+            },
+            {
+              "value": "away",
+              "label": {
+                "en": "Away",
+                "fr": "Absent",
+                "de": "Abwesend",
+                "es": "Ausente"
+              }
+            }
           ]
         }
       ],
       "variables": [
-        { "key": "mode", "type": "string", "label": { "en": "New mode", "fr": "Nouveau mode" } },
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "New mode",
+            "fr": "Nouveau mode",
+            "de": "Neuer Modus",
+            "es": "Nuevo modo"
+          }
+        },
         {
           "key": "previous_mode",
           "type": "string",
-          "label": { "en": "Previous mode", "fr": "Mode précédent" }
+          "label": {
+            "en": "Previous mode",
+            "fr": "Mode précédent",
+            "de": "Vorheriger Modus",
+            "es": "Modo anterior"
+          }
         },
         {
           "key": "location_name",
           "type": "string",
-          "label": { "en": "Ring location", "fr": "Lieu Ring" }
+          "label": {
+            "en": "Ring location",
+            "fr": "Lieu Ring",
+            "de": "Ring-Standort",
+            "es": "Ubicación Ring"
+          }
         }
       ]
     }
@@ -252,10 +535,17 @@
   "scene_actions": [
     {
       "key": "take_snapshot",
-      "label": { "en": "Take a Ring snapshot", "fr": "Prendre un instantané Ring" },
+      "label": {
+        "en": "Take a Ring snapshot",
+        "fr": "Prendre un instantané Ring",
+        "de": "Ring-Schnappschuss aufnehmen",
+        "es": "Tomar una instantánea Ring"
+      },
       "description": {
         "en": "Refreshes the camera picture, ready for a following \"send a camera image\" action.",
-        "fr": "Rafraîchit l'image de la caméra, prête pour une action « envoyer l'image d'une caméra » qui suit."
+        "fr": "Rafraîchit l'image de la caméra, prête pour une action « envoyer l'image d'une caméra » qui suit.",
+        "de": "Aktualisiert das Kamerabild für eine folgende Aktion „Kameraaufnahme senden“.",
+        "es": "Actualiza la imagen de la cámara para una acción «Enviar una imagen de cámara» posterior."
       },
       "timeout_seconds": 30,
       "fields": [
@@ -263,7 +553,12 @@
           "key": "camera",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Camera", "fr": "Caméra" },
+          "label": {
+            "en": "Camera",
+            "fr": "Caméra",
+            "de": "Kamera",
+            "es": "Cámara"
+          },
           "required": true
         }
       ],
@@ -271,17 +566,38 @@
         {
           "key": "captured",
           "type": "boolean",
-          "label": { "en": "Snapshot taken", "fr": "Instantané pris" }
+          "label": {
+            "en": "Snapshot taken",
+            "fr": "Instantané pris",
+            "de": "Schnappschuss aufgenommen",
+            "es": "Instantánea tomada"
+          }
         },
-        { "key": "taken_at", "type": "string", "label": { "en": "Taken at", "fr": "Pris à" } }
+        {
+          "key": "taken_at",
+          "type": "string",
+          "label": {
+            "en": "Taken at",
+            "fr": "Pris à",
+            "de": "Aufnahmezeitpunkt",
+            "es": "Hora de captura"
+          }
+        }
       ]
     },
     {
       "key": "set_alarm_mode",
-      "label": { "en": "Set the Ring Alarm mode", "fr": "Changer le mode de l'alarme Ring" },
+      "label": {
+        "en": "Set the Ring Alarm mode",
+        "fr": "Changer le mode de l'alarme Ring",
+        "de": "Modus von Ring Alarm festlegen",
+        "es": "Cambiar el modo de la alarma Ring"
+      },
       "description": {
         "en": "Arms or disarms the Ring Alarm. Needs the alarm control allowed in the integration configuration.",
-        "fr": "Arme ou désarme l'alarme Ring. Demande d'autoriser le contrôle de l'alarme dans la configuration."
+        "fr": "Arme ou désarme l'alarme Ring. Demande d'autoriser le contrôle de l'alarme dans la configuration.",
+        "de": "Schaltet Ring Alarm scharf oder unscharf. Die Alarmsteuerung muss in der Konfiguration der Integration erlaubt sein.",
+        "es": "Arma o desarma la alarma Ring. Requiere permitir el control de la alarma en la configuración de la integración."
       },
       "timeout_seconds": 30,
       "fields": [
@@ -289,33 +605,83 @@
           "key": "alarm",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Ring Alarm", "fr": "Alarme Ring" },
+          "label": {
+            "en": "Ring Alarm",
+            "fr": "Alarme Ring",
+            "de": "Ring Alarm",
+            "es": "Alarma Ring"
+          },
           "required": true
         },
         {
           "key": "mode",
           "type": "select",
-          "label": { "en": "Mode", "fr": "Mode" },
+          "label": {
+            "en": "Mode",
+            "fr": "Mode",
+            "de": "Modus",
+            "es": "Modo"
+          },
           "required": true,
           "options": [
-            { "value": "disarmed", "label": { "en": "Disarmed", "fr": "Désarmée" } },
-            { "value": "home", "label": { "en": "Home", "fr": "Domicile" } },
-            { "value": "away", "label": { "en": "Away", "fr": "Absent" } }
+            {
+              "value": "disarmed",
+              "label": {
+                "en": "Disarmed",
+                "fr": "Désarmée",
+                "de": "Unscharf",
+                "es": "Desarmada"
+              }
+            },
+            {
+              "value": "home",
+              "label": {
+                "en": "Home",
+                "fr": "Domicile",
+                "de": "Zuhause",
+                "es": "En casa"
+              }
+            },
+            {
+              "value": "away",
+              "label": {
+                "en": "Away",
+                "fr": "Absent",
+                "de": "Abwesend",
+                "es": "Ausente"
+              }
+            }
           ]
         }
       ],
       "outputs": [
-        { "key": "mode", "type": "string", "label": { "en": "Mode set", "fr": "Mode appliqué" } }
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "Mode set",
+            "fr": "Mode appliqué",
+            "de": "Gesetzter Modus",
+            "es": "Modo aplicado"
+          }
+        }
       ]
     }
   ],
   "widgets": [
     {
       "key": "doorbell",
-      "label": { "en": "Ring doorbell", "fr": "Sonnette Ring" },
+      "label": {
+        "en": "Ring doorbell",
+        "fr": "Sonnette Ring",
+        "de": "Ring-Türklingel",
+        "es": "Timbre Ring"
+      },
       "description": {
         "en": "Last snapshot, last ring and motion, light and siren of a Ring doorbell or camera.",
-        "fr": "Dernier instantané, dernier appui et mouvement, éclairage et sirène d'une sonnette ou caméra Ring."
+        "fr": "Dernier instantané, dernier appui et mouvement, éclairage et sirène d'une sonnette ou caméra Ring.",
+        "de": "Letzter Schnappschuss, Klingeln und Bewegung, Licht und Sirene einer Ring-Türklingel oder -Kamera.",
+        "es": "Última instantánea, último timbrazo y movimiento, luz y sirena de un timbre o una cámara Ring."
       },
       "icon": "bell",
       "settings": [
@@ -323,7 +689,12 @@
           "key": "camera",
           "type": "select",
           "source": "devices",
-          "label": { "en": "Doorbell or camera", "fr": "Sonnette ou caméra" },
+          "label": {
+            "en": "Doorbell or camera",
+            "fr": "Sonnette ou caméra",
+            "de": "Türklingel oder Kamera",
+            "es": "Timbre o cámara"
+          },
           "required": true
         }
       ],

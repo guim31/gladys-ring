@@ -27,44 +27,78 @@ export const DOORBELL_ACTIONS = {
   SIREN_OFF: 'siren_off',
 };
 
-const DETECTION_LABELS = {
-  person: { en: 'Person', fr: 'Personne' },
-  vehicle: { en: 'Vehicle', fr: 'Véhicule' },
-  package: { en: 'Package', fr: 'Colis' },
-  motion: { en: 'Motion', fr: 'Mouvement' },
+export const DETECTION_LABELS = {
+  person: { en: 'Person', fr: 'Personne', de: 'Person', es: 'Persona' },
+  vehicle: { en: 'Vehicle', fr: 'Véhicule', de: 'Fahrzeug', es: 'Vehículo' },
+  package: { en: 'Package', fr: 'Colis', de: 'Paket', es: 'Paquete' },
+  motion: { en: 'Motion', fr: 'Mouvement', de: 'Bewegung', es: 'Movimiento' },
 };
 
 const T = {
   chooseCamera: {
     en: 'Choose a Ring camera or doorbell in the widget settings.',
     fr: 'Choisissez une caméra ou sonnette Ring dans les réglages du widget.',
+    de: 'Wähle in den Widget-Einstellungen eine Ring-Kamera oder -Türklingel.',
+    es: 'Elija una cámara o un timbre Ring en los ajustes del widget.',
   },
   notConnected: {
     en: 'Not connected to Ring: see the integration configuration.',
     fr: "Pas connecté à Ring : voir la configuration de l'intégration.",
+    de: 'Nicht mit Ring verbunden: siehe Konfiguration der Integration.',
+    es: 'Sin conexión con Ring: consulte la configuración de la integración.',
   },
   noSnapshot: {
     en: 'No snapshot yet: tap "Snapshot" to take one.',
     fr: "Pas encore d'instantané : touchez « Instantané » pour en prendre un.",
+    de: 'Noch kein Schnappschuss: Tippe auf „Foto“, um einen aufzunehmen.',
+    es: 'Aún no hay ninguna instantánea: pulse «Instantánea» para tomar una.',
   },
-  snapshotAlt: { en: 'Last snapshot', fr: 'Dernier instantané' },
-  lastRing: { en: 'Last ring', fr: 'Dernier appui' },
-  lastMotion: { en: 'Last motion', fr: 'Dernier mouvement' },
-  snapshotAt: { en: 'Snapshot', fr: 'Instantané' },
-  connection: { en: 'Connection', fr: 'Connexion' },
-  online: { en: 'Online', fr: 'En ligne' },
-  offline: { en: 'Offline', fr: 'Hors ligne' },
-  never: { en: 'None yet', fr: 'Aucun pour l’instant' },
-  battery: { en: 'Battery', fr: 'Batterie' },
-  refresh: { en: 'Snapshot', fr: 'Instantané' },
-  lightOn: { en: 'Light on', fr: 'Allumer' },
-  lightOff: { en: 'Light off', fr: 'Éteindre' },
-  sirenOn: { en: 'Siren', fr: 'Sirène' },
-  sirenOff: { en: 'Stop siren', fr: 'Couper la sirène' },
-  toastRefreshed: { en: 'Snapshot updated.', fr: 'Instantané mis à jour.' },
-  toastSirenOn: { en: 'Siren sounding.', fr: 'La sirène retentit.' },
-  toastSirenOff: { en: 'Siren stopped.', fr: 'Sirène coupée.' },
+  snapshotAlt: {
+    en: 'Last snapshot',
+    fr: 'Dernier instantané',
+    de: 'Letzter Schnappschuss',
+    es: 'Última instantánea',
+  },
+  lastRing: { en: 'Last ring', fr: 'Dernier appui', de: 'Letztes Klingeln', es: 'Último timbrazo' },
+  lastMotion: {
+    en: 'Last motion',
+    fr: 'Dernier mouvement',
+    de: 'Letzte Bewegung',
+    es: 'Último movimiento',
+  },
+  snapshotAt: { en: 'Snapshot', fr: 'Instantané', de: 'Schnappschuss', es: 'Instantánea' },
+  connection: { en: 'Connection', fr: 'Connexion', de: 'Verbindung', es: 'Conexión' },
+  online: { en: 'Online', fr: 'En ligne', de: 'Online', es: 'En línea' },
+  offline: { en: 'Offline', fr: 'Hors ligne', de: 'Offline', es: 'Sin conexión' },
+  never: { en: 'None yet', fr: 'Aucun pour l’instant', de: 'Noch nie', es: 'Todavía ninguno' },
+  battery: { en: 'Battery', fr: 'Batterie', de: 'Batterie', es: 'Batería' },
+  refresh: { en: 'Snapshot', fr: 'Instantané', de: 'Foto', es: 'Instantánea' },
+  lightOn: { en: 'Light on', fr: 'Allumer', de: 'Licht an', es: 'Encender' },
+  lightOff: { en: 'Light off', fr: 'Éteindre', de: 'Licht aus', es: 'Apagar' },
+  sirenOn: { en: 'Siren', fr: 'Sirène', de: 'Sirene', es: 'Sirena' },
+  sirenOff: { en: 'Stop siren', fr: 'Couper la sirène', de: 'Sirene aus', es: 'Parar sirena' },
+  toastRefreshed: {
+    en: 'Snapshot updated.',
+    fr: 'Instantané mis à jour.',
+    de: 'Schnappschuss aktualisiert.',
+    es: 'Instantánea actualizada.',
+  },
+  toastSirenOn: {
+    en: 'Siren sounding.',
+    fr: 'La sirène retentit.',
+    de: 'Die Sirene ertönt.',
+    es: 'La sirena está sonando.',
+  },
+  toastSirenOff: {
+    en: 'Siren stopped.',
+    fr: 'Sirène coupée.',
+    de: 'Sirene gestoppt.',
+    es: 'Sirena detenida.',
+  },
 };
+
+// Exported for the translation checks (test/i18n.test.js).
+export { T as WIDGET_TEXTS };
 
 /**
  * A date as a short local text (≤ 40 characters, the bound of a status

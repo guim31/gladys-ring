@@ -12,6 +12,7 @@ import {
 import { NOTIFICATIONS } from './helpers/fakeRing.js';
 import { createFakeGladys } from './helpers/fakeGladys.js';
 import { setup, waitFor } from './helpers/setup.js';
+import { LANGUAGES } from '../src/config.js';
 
 const cam = (id) => `ext:ring:camera:${id}`;
 const content = (gladys, app, camera, language = 'en') =>
@@ -21,7 +22,7 @@ test('every camera of the fixtures gives a content rendered exactly as sent', as
   const { gladys, app, account } = await setup();
   await waitFor(() => account.cameras.every((c) => app.snapshotOf(c.id)), 'snapshots not taken');
   for (const camera of account.cameras) {
-    for (const language of ['en', 'fr']) {
+    for (const language of LANGUAGES) {
       const result = content(gladys, app, cam(camera.id), language);
       assert.deepEqual(validateWidgetContent(result), [], `${camera.name} (${language})`);
     }
@@ -129,8 +130,8 @@ test('a widget without a camera, or without Ring, explains what to do', async ()
   assert.match(offline.components[0].text.fr, /Pas connecté/);
 });
 
-test('dates fit a status value in both languages', () => {
-  for (const language of ['en', 'fr', 'de']) {
+test('dates fit a status value in every language', () => {
+  for (const language of LANGUAGES) {
     const text = formatWhen('2026-12-31T23:59:00Z', language);
     assert.ok(text && text.length <= 40, `${language}: ${text}`);
   }

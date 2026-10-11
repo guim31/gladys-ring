@@ -96,7 +96,7 @@ de Ring toutes les 5 minutes.
 
 Ouvrez l'onglet **Découverte** et ajoutez les appareils voulus. Gladys garde les noms de
 fonctionnalités choisis à l'ajout d'un appareil : choisissez d'abord la **Langue des noms
-d'appareils** dans l'onglet Configuration (anglais ou français).
+d'appareils** dans l'onglet Configuration (anglais, français, allemand ou espagnol).
 
 L'instantané de la caméra apparaît dans la boîte caméra de Gladys et dans le widget _Sonnette
 Ring_.

@@ -10,6 +10,11 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Added
+
+- German and Spanish: the configuration, actions, scene triggers and actions, the doorbell widget
+  and the messages are translated, and the device names can be created in German or Spanish.
+
 ## [1.0.2] - 2026-10-09
 
 ## [1.0.1] - 2026-10-09
