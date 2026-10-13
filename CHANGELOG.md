@@ -10,6 +10,14 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Changed
+
+- Quieter logs: motions are no longer logged at the default level, and a failure that repeats
+  (Ring unreachable, Gladys restarting, a library error) is logged once, then once more when it is
+  over, instead of at every retry.
+- Updated the Gladys integration SDK to 0.15 and the other dependencies. States keep reaching
+  Gladys 5.2.0 without its polling, which only applies to devices created with `should_poll`.
+
 ## [1.2.0] - 2026-10-11
 
 ## [1.1.0] - 2026-10-11

@@ -10,6 +10,7 @@
 // -----------------------------------------------------------------------------
 
 import { createLogger } from '@gladysassistant/integration-sdk';
+import { createIssueLog } from './issues.js';
 
 const logger = createLogger({ name: 'states' });
 
@@ -25,6 +26,8 @@ export function createStatePublisher(gladys) {
   // Latest known value of every feature, and the last one Gladys accepted.
   const current = new Map();
   const sent = new Map();
+  // Gladys restarting fails every state for a while: one line, not one each.
+  const issues = createIssueLog(logger);
 
   function isCreated(deviceExternalId) {
     // `gladys.devices` is the SDK's copy of the devices the user created,
@@ -39,8 +42,9 @@ export function createStatePublisher(gladys) {
     try {
       await gladys.publishState(featureExternalId, value);
       sent.set(featureExternalId, value);
+      issues.recover('publish', 'States published again');
     } catch (err) {
-      logger.warn(`State of ${featureExternalId} not published: ${err.message}`);
+      issues.fail('publish', `State of ${featureExternalId} not published: ${err.message}`);
     }
   }
 

@@ -15,6 +15,7 @@ import { createTokenStore } from './auth/tokenStore.js';
 import { SIGN_IN_MESSAGES, createSignIn } from './auth/signIn.js';
 import { RingAuthError, RingSession } from './ring/session.js';
 import { createStatePublisher } from './states.js';
+import { createIssueLog } from './issues.js';
 import { createEventLog, parseNotification } from './events.js';
 import { fitJpeg, toCameraImage } from './image.js';
 import {
@@ -81,6 +82,7 @@ export function createApp({ gladys, dataDir, createRingApi, createRestClient, no
   const timers = new Map(); // pulse / hold timers, by feature external id
   const transports = new Map(); // device external id -> last published transport
   const alarmModes = new Map(); // location id -> last Gladys mode seen
+  const issues = createIssueLog(logger);
 
   let config = normalizeConfig();
   let session = null;
@@ -159,11 +161,13 @@ export function createApp({ gladys, dataDir, createRingApi, createRestClient, no
       }
       if (err instanceof RingAuthError) {
         // Never log the token, nor the library's error body.
-        logger.error('Ring refused the refresh token: sign in again.');
+        issues.recover('ring-unreachable');
+        issues.fail('ring-auth', 'Ring refused the refresh token: sign in again.', 'error');
         status = 'revoked';
         scheduleRetry(RETRY_AUTH_MS);
       } else {
-        logger.warn(`Ring unreachable (${err.message}), retrying in 5 minutes`);
+        issues.recover('ring-auth');
+        issues.fail('ring-unreachable', `Ring unreachable (${err.message}), retrying in 5 minutes`);
         status = 'unreachable';
         scheduleRetry(RETRY_UNREACHABLE_MS);
       }
@@ -176,6 +180,9 @@ export function createApp({ gladys, dataDir, createRingApi, createRestClient, no
     }
     session = next;
     status = 'connected';
+    // The "Connected to Ring" line below says the failure is over.
+    issues.recover('ring-auth');
+    issues.recover('ring-unreachable');
     const cameras = session.cameras.length;
     const sensors = session.locations.reduce((n, l) => n + l.sensors.length, 0);
     logger.info(
@@ -241,8 +248,9 @@ export function createApp({ gladys, dataDir, createRingApi, createRestClient, no
     try {
       await gladys.publishTransports([{ external_id: deviceExternalId, transport }]);
       transports.set(deviceExternalId, transport);
+      issues.recover('transport', 'Transports published again');
     } catch (err) {
-      logger.warn(`Transport of ${deviceExternalId} not published: ${err.message}`);
+      issues.fail('transport', `Transport of ${deviceExternalId} not published: ${err.message}`);
     }
   }
 
@@ -300,7 +308,8 @@ export function createApp({ gladys, dataDir, createRingApi, createRestClient, no
         device_name: deviceName,
       });
     } else {
-      logger.info(`Motion (${event.detection}): ${deviceName}`);
+      // Motions can come by the dozen on a busy street: debug only.
+      logger.debug(`Motion (${event.detection}): ${deviceName}`);
       pulse(ids.feature(CAMERA_FEATURES.MOTION), MOTION_HOLD_MS);
       await fireSceneEvent(SCENE_TRIGGERS.MOTION_DETECTED, {
         device: ids.device,
@@ -382,8 +391,9 @@ export function createApp({ gladys, dataDir, createRingApi, createRestClient, no
     }
     try {
       await gladys.publishCameraImage(device, toCameraImage(buffer));
+      issues.recover('camera-image', 'Snapshots published again');
     } catch (err) {
-      logger.warn(`Snapshot of ${camera.name} not published: ${err.message}`);
+      issues.fail('camera-image', `Snapshot of ${camera.name} not published: ${err.message}`);
     }
   }
 
