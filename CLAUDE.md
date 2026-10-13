@@ -39,6 +39,7 @@ src/auth/tokenStore.js            rotating refresh token + hardware id, persiste
 src/auth/signIn.js                two-step sign-in (actions send_code / confirm_code)
 src/devices/camera.js, alarm.js   discovery payloads and states, pure functions of the Ring data
 src/states.js                     publish only changes; republish on onDeviceCreated
+src/issues.js                     repeated failures logged once (first failure, then recovery)
 src/events.js                     push notifications -> ding/motion; last events in /data
 src/image.js                      shrink snapshots above the 150 KB camera limit (sharp)
 src/scenes.js                     scene action handlers (manifest `scene_actions`)
@@ -77,8 +78,10 @@ test/                             node --test; fixtures/ring/ = anonymized Ring 
   `type: "provider"`: 5.1.0). `test/manifest.test.js` ties the manifest to the
   code (defaults, action, scene and widget handlers): change both sides
   together.
-- **User-facing text** is bilingual (English and French): action messages,
-  manifest texts, and `docs/en.md` / `docs/fr.md`, kept in sync.
+- **User-facing text** comes in four languages (English, French, German with
+  "du", Spanish with "usted"): action messages, widget and manifest texts
+  (`test/i18n.test.js` checks it). The documentation is `docs/en.md` /
+  `docs/fr.md`, kept in sync.
 - **Style.** Prettier formats, ESLint catches mistakes. Comments explain why,
   in English. Tests never touch the network.
 
@@ -116,6 +119,13 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
   15000, 30000, 60000). Le template publie `poll_frequency: 300` sans `should_poll` : c'est faux,
   le cœur répond 400 à la découverte. Pour une cadence hors liste, publier `should_poll: false` et
   pousser les états depuis le conteneur, en gardant un `onPoll` de repli.
+- **Gladys 5.2.0 et #3198** : le cœur ne sonde que si `should_poll === true` **et** `poll_frequency`
+  valide, et ne met **jamais à jour** ces champs sur un appareil déjà créé : un appareil créé sans
+  `should_poll` ne sera jamais sondé, même après le correctif #3199. Ici, rien ne dépend de `onPoll`
+  (tous les appareils ont `should_poll: false`, les états arrivent par les abonnements de la
+  bibliothèque, qui rafraîchit l'état des caméras toutes les 60 s) ; `onPoll` ne fait que renvoyer
+  les états connus. `test/polling-logs.test.js` le vérifie : ne pas introduire de dépendance au
+  polling du cœur.
 - **`min` et `max` sont NOT NULL** dans `t_device_feature`, y compris pour `text/text` : sans eux,
   « Ajouter à Gladys » échoue en HTTP 422. Mettre 0/0, comme Zigbee2MQTT.
 - Un état publié sur une fonctionnalité **pas encore ajoutée** dans Gladys reçoit un 200 puis est
@@ -211,9 +221,19 @@ code de ce dépôt. Compléter ce fichier quand un nouveau piège est découvert
   0600), jamais dans un log, jamais dans la configuration.
 - Sans `systemId` stable, la bibliothèque tire un identifiant matériel au hasard dans un conteneur :
   un nouvel « appareil autorisé » dans le compte Ring à chaque démarrage. Il est persisté dans `/data`.
-- Le SDK publié (0.14.0) n'a ni `publishChangedStates` ni `@gladysassistant/integration-sdk/testing`,
-  que le README de `master` documente : `src/states.js` et `test/helpers/fakeGladys.js` les
-  remplacent.
+- SDK 0.15 : il apporte `publishChangedStates` et `@gladysassistant/integration-sdk/testing`, mais
+  `src/states.js` (états gardés tant que l'appareil n'est pas créé, `republishDevice`) et
+  `test/helpers/fakeGladys.js` (écrits pour 0.14) font le même travail et sont couverts par les
+  tests : ils restent, faute de gain à les réécrire.
+- **Logs** : au niveau info, seulement le cycle de vie (démarrage, connexion à Ring, appui sur la
+  sonnette, changement de mode de l'alarme, actions de scène). Mouvements, états, instantanés
+  périodiques : debug (`LOG_LEVEL=debug`). Un échec qui se répète passe par `src/issues.js` (une
+  ligne au premier échec, une au rétablissement) ; les erreurs de la bibliothèque, par
+  `createErrorLogger` (`src/ring/logs.js`, même message une fois par heure, jetons masqués).
+  `test/polling-logs.test.js` vérifie qu'un cycle normal n'écrit rien en info.
+- `npm audit` signale `ip` (SSRF dans `isPublic`) via `werift`, tiré par `ring-client-api` pour la
+  vidéo en direct WebRTC, que l'intégration n'utilise pas. Aucune version corrigée n'existe ; le
+  « correctif » proposé (`--force`) rétrograde `ring-client-api` en 9.x : ne pas l'appliquer.
 - `sharp` installe aussi `@img/sharp-wasm32` (9 Mo, dépendance optionnelle sans contrainte de
   plateforme) : sans effet, ne pas s'en inquiéter.
 - Capteurs de l'alarme : chaque type Ring se lit comme dans homebridge-ring (même dépôt que la

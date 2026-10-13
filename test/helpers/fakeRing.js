@@ -173,7 +173,8 @@ export function buildFakeAccount() {
 
 /**
  * A createRingApi factory for createApp. `behavior` can make the sign-in
- * fail: 'auth' (token refused), 'network' (no answer).
+ * fail: 'auth' (token refused), 'network' (no answer); `factory.behavior`
+ * changes it afterwards.
  */
 export function fakeRingApiFactory({ account = buildFakeAccount(), behavior = 'ok' } = {}) {
   const created = [];
@@ -183,12 +184,12 @@ export function fakeRingApiFactory({ account = buildFakeAccount(), behavior = 'o
       onRefreshTokenUpdated: new Subject(),
       disconnected: false,
       async getLocations() {
-        if (behavior === 'auth') {
+        if (factory.behavior === 'auth') {
           throw new Error(
             'Refresh token is not valid.  Unable to authenticate with Ring servers.  See https://github.com/dgreif/ring/wiki/Refresh-Tokens',
           );
         }
-        if (behavior === 'network') {
+        if (factory.behavior === 'network') {
           throw new Error('fetch failed');
         }
         return account.locations;
@@ -202,5 +203,7 @@ export function fakeRingApiFactory({ account = buildFakeAccount(), behavior = 'o
   };
   factory.created = created;
   factory.account = account;
+  // Mutable, so a test can make Ring fail, then come back.
+  factory.behavior = behavior;
   return factory;
 }
