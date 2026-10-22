@@ -10,6 +10,14 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-10-22
+
+### Security
+
+- Rebuilt on Node.js 24.22.1, the October 2026 security release (remote code
+  execution in the Brotli decoder, CVE-2026-111497; TLS hostname and DNS
+  fixes).
+
 ## [1.2.1] - 2026-10-13
 
 ### Changed
@@ -51,7 +59,8 @@ the notes of the version's GitHub Release.
 - Snapshots above the Gladys 150 KB limit are downsized.
 - English and French documentation.
 
-[Unreleased]: https://github.com/guim31/gladys-ring/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/guim31/gladys-ring/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/guim31/gladys-ring/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/guim31/gladys-ring/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/guim31/gladys-ring/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/guim31/gladys-ring/compare/v1.0.2...v1.1.0
