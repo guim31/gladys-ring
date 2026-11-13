@@ -27,5 +27,8 @@
     "globals": "^17.14.0",
     "prettier": "^3.9.9"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "overrides": {
+    "@eneris/push-receiver": "4.3.1"
+  }
 }

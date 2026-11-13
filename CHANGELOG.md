@@ -10,6 +10,12 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Fixed
+
+- Motion and doorbell events arrive again: Ring's push notifications failed to decrypt
+  (`ERR_CRYPTO_ECDH_INVALID_PUBLIC_KEY`) since Firebase changed a header format. The push library
+  is pinned to its fixed release, 4.3.1, until ring-client-api ships it (#15).
+
 ## [1.2.2] - 2026-10-22
 
 ### Security
